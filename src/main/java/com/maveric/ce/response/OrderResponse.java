@@ -1,8 +1,7 @@
 package com.maveric.ce.response;
 
-import org.springframework.stereotype.Component;
-
 import com.maveric.ce.dto.OrderDto;
+import org.springframework.stereotype.Component;
 
 import lombok.Data;
 

@@ -3,7 +3,6 @@ package com.maveric.ce.controller;
 import com.maveric.ce.dto.AccountDto;
 import com.maveric.ce.dto.AccountResponseDto;
 import com.maveric.ce.dto.AccountUpdateDto;
-import com.maveric.ce.exceptions.ServiceException;
 import com.maveric.ce.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

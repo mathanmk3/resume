@@ -3,6 +3,11 @@ package com.maveric.ce.controller;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.maveric.ce.dto.OrderDto;
+import com.maveric.ce.dto.OrderPageDto;
+import com.maveric.ce.dto.WatchListDto;
+import com.maveric.ce.exceptions.SQLExceptions;
+import com.maveric.ce.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.maveric.ce.dto.OrderDto;
-import com.maveric.ce.dto.OrderPageDto;
-import com.maveric.ce.dto.WatchListDto;
-import com.maveric.ce.exceptions.SQLExceptions;
-import com.maveric.ce.exceptions.ServiceException;
 import com.maveric.ce.response.OrderResponse;
 import com.maveric.ce.serviceImpl.CurrencyExchangeOrderServiceImpl;
 

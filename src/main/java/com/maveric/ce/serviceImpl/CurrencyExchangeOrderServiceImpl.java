@@ -5,24 +5,25 @@ package com.maveric.ce.serviceImpl;
  */
 import java.util.LinkedList;
 import java.util.List;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+
 import com.maveric.ce.dto.OrderDto;
 import com.maveric.ce.dto.OrderPageDto;
 import com.maveric.ce.dto.WatchListDto;
 import com.maveric.ce.entity.AccountDetails;
-import com.maveric.ce.entity.CurrencyExchangeOrders;
 import com.maveric.ce.exceptions.ErrorCodes;
 import com.maveric.ce.exceptions.SQLExceptions;
-import com.maveric.ce.exceptions.ServiceException;
-import com.maveric.ce.repository.CurrencyExchangeOrdersRepo;
 import com.maveric.ce.repository.IAccountRepository;
-import com.maveric.ce.service.CurrencyExchangeOrderService;
 import com.maveric.ce.utils.CommonUtils;
 import com.maveric.ce.utils.DateUtils;
 import com.maveric.ce.utils.OrderUtils;
+import org.hibernate.service.spi.ServiceException;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import com.maveric.ce.entity.CurrencyExchangeOrders;
+import com.maveric.ce.repository.CurrencyExchangeOrdersRepo;
+import com.maveric.ce.service.CurrencyExchangeOrderService;
 
 @Service
 public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderService {
@@ -42,8 +43,8 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	/**
 	 * @param customerMailId is passed to retrieve the Customer account details
 	 * @return list of customer accounts
-	 * @throws serviceException when Account not found
-	 * @throws SQLException when Connection issue.
+	 * @throws ServiceException when Account not found
+	 * @throws SQLExceptions when Connection issue.
 	 * 
 	 */
 	@Override
@@ -68,11 +69,11 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	}
 
 	/**
-	 * @param OrderDto is passed to place the exchange orders
+	 * @param orderDto is passed to place the exchange orders
 	 * @return Order Details
 	 * @apiNote Call the currency Date API to get the updated currency date
 	 * @apiNote Update the Customer account balance once order is placed.
-	 * @throws serviceException when Account not found
+	 * @throws ServiceException when Account not found
 	 * @throws NullPointerException when Empty response from Currency API.
 	 * 
 	 */
@@ -107,7 +108,7 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 		return ordermap;
 	}
 	/**
-	 * @param customer is passed to retrieve the lasted order.
+	 * @param customerMailId is passed to retrieve the lasted order.
 	 * @return List of customer orders
 	 * @throws ServiceException when No orders found
 	 * @throws NullPointerException when Empty response from Currency API.

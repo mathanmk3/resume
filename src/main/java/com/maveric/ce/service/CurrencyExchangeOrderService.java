@@ -3,12 +3,11 @@ package com.maveric.ce.service;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.web.client.HttpServerErrorException;
-
 import com.maveric.ce.dto.OrderDto;
 import com.maveric.ce.dto.OrderPageDto;
 import com.maveric.ce.dto.WatchListDto;
 import com.maveric.ce.exceptions.ServiceException;
+import org.springframework.web.client.HttpServerErrorException;
 
 
 public interface CurrencyExchangeOrderService {

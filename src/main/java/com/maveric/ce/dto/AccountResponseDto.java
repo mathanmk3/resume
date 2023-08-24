@@ -1,7 +1,6 @@
 package com.maveric.ce.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.maveric.ce.userenum.CurrencyType;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
