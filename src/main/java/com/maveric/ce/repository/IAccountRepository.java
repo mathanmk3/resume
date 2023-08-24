@@ -15,7 +15,6 @@ public interface IAccountRepository extends JpaRepository<AccountDetails, Long> 
 
 	
     List<AccountDetails> findByCustomer_CustomerId(Long customerId);
-
     AccountDetails findByAccountNumber(Long accountNumber);
 
     @Query(value = " select * from account_details a where a.account_number =?1 and a.customers_id=?2",nativeQuery = true)

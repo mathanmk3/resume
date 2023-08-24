@@ -11,6 +11,7 @@ public interface AccountService
 {
     AccountResponseDto createAccount(Long customerId, AccountDto accountDto) throws ServiceException;
 
+
     AccountResponseDto fetchByAccountNumber(Long accountNumber) throws ServiceException;
 
     List<AccountResponseDto> fetchAccountByCustomer(Long customerId)throws ServiceException;

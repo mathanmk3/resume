@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 	ModelMapper modelMapper;
 
 	/*
-	 * Creating an account for customer..
+	 * Creating an account for customer....
 	 */
 	@Override
 	public AccountResponseDto createAccount(Long customerId, AccountDto accountDto) throws ServiceException {

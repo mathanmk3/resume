@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Setter
 public class AccountDetails {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountNumber;

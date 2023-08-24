@@ -15,6 +15,7 @@ public class AccountUpdateDto {
     @NotNull(message = "Balance is mandatory")
     private BigDecimal balance;
 
+
     @NotNull(message = "account number is mandatory to update balance")
     private Long accountNumber;
 }

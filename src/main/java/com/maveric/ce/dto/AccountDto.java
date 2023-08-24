@@ -18,7 +18,7 @@ public class AccountDto
 
 //    private Long accountNumber;
 
-  //  private String accHolderName;
+  //   private String accHolderName;
 
     @NotNull(message = "Please give currency for account")
     @Enumerated(EnumType.STRING)
