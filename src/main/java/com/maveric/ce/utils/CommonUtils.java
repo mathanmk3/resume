@@ -2,6 +2,7 @@ package com.maveric.ce.utils;
 
 import com.maveric.ce.dto.*;
 import com.maveric.ce.entity.AccountDetails;
+import com.maveric.ce.entity.CustomerDetails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,6 @@ public class CommonUtils {
 
 		BeanUtils.copyProperties(customerDetails, customerResponseDto);
 
-		/*
-		 * if(customerDetails.getAccountDetails()!=null){ List<AccountResponseDto>
-		 * accountResponseDtoList = customerDetails.getAccountDetails().stream().map(
-		 * customer -> modelMapper.map(customer,AccountResponseDto.class)
-		 * ).collect(Collectors.toList());
-		 * customerResponseDto.setAccountResponseDtoList(accountResponseDtoList); }
-		 */
 
 		return customerResponseDto;
 

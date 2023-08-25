@@ -2,6 +2,9 @@ package com.maveric.ce.exceptions;
 
 import com.maveric.ce.dto.ErrorDto;
 
+import com.maveric.ce.serviceImpl.CustomerServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -12,13 +15,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptions {
+
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptions.class);
 	@Autowired
 	ErrorCodes ec;
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorDto> handleBadRequestExceptions(MethodArgumentNotValidException ex) {
 		ErrorDto errors = new ErrorDto();
-
+		logger.info("called MethodArgumentNotValidException ");
+		logger.info("Exception:"+ex);
 		ex.getBindingResult().getAllErrors().forEach((err) -> {
 
 			String errorMessage = err.getDefaultMessage();

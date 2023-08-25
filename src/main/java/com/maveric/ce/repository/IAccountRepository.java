@@ -1,6 +1,7 @@
 package com.maveric.ce.repository;
 
 import com.maveric.ce.entity.AccountDetails;
+import com.maveric.ce.userenum.CurrencyType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
