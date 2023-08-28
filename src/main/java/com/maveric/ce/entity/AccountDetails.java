@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenerationTime;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,6 +49,13 @@ public class AccountDetails {
 
     @Column(name = "accountdebiteddatetime")
     private String accountDebitedDateTime;
+
+    @OneToMany(mappedBy = "orderFromAccountId",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    private List<CurrencyExchangeOrders> listOfaccountFrom;
+
+
+    @OneToMany(mappedBy = "orderToAccountId",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
+    private List<CurrencyExchangeOrders> listOfaccountTo;
 
     @Override
     public String toString() {

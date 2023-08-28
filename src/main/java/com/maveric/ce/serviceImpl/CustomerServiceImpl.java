@@ -69,9 +69,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto updateCustomer(CustomerUpdateDto customerDto)  {
+    public CustomerResponseDto updateCustomer(CustomerUpdateDto customerDto,Long customerId)  {
 
-        Optional<CustomerDetails> customerDetails1 = iCustomerRepository.findBycustomerId(customerDto.getCustomerId());
+        Optional<CustomerDetails> customerDetails1 = iCustomerRepository.findBycustomerId(customerId);
 
         logger.info("update customer customer found: ",customerDetails1);
         System.out.println("update customer object:"+customerDetails1);

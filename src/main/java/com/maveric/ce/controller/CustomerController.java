@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/customer")
+@RequestMapping("/customer")
 public class CustomerController
 {
 
@@ -28,19 +28,19 @@ public class CustomerController
     {
         return new ResponseEntity<>(customerService.createCustomer(customerDto), HttpStatus.CREATED);
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable(name = "id") Long customerId)
+    @DeleteMapping("/delete/{customerId}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable(name = "customerId") Long customerId)
     {
         return new ResponseEntity<>(customerService.deleteCustomer(customerId),HttpStatus.OK);
     }
-    @PutMapping("/update")
-    public ResponseEntity<CustomerResponseDto> updateCustomer(@Valid @RequestBody CustomerUpdateDto customerUpdateDto)
+    @PutMapping("/update/{customerId}")
+    public ResponseEntity<CustomerResponseDto> updateCustomer(@Valid @RequestBody CustomerUpdateDto customerUpdateDto,@PathVariable Long customerId)
     {
         logger.info("updateCustomer called:",customerUpdateDto);
-        return new ResponseEntity<>(customerService.updateCustomer(customerUpdateDto),HttpStatus.OK);
+        return new ResponseEntity<>(customerService.updateCustomer(customerUpdateDto,customerId),HttpStatus.OK);
     }
 
-    @GetMapping("/{customerId}")
+    @GetMapping("/fetch/{customerId}")
     public ResponseEntity<CustomerFetchResponseDto> findCustomerById(@PathVariable(name="customerId") Long customerId){
 
         return new ResponseEntity<>(customerService.fetchCustomerById(customerId),HttpStatus.OK);

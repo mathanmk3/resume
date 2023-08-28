@@ -12,7 +12,7 @@ public interface CustomerService
     CustomerResponseDto createCustomer(CustomerDto customerDto);
     String deleteCustomer(Long customerId);
 
-    CustomerResponseDto updateCustomer(CustomerUpdateDto customerDto) ;
+    CustomerResponseDto updateCustomer(CustomerUpdateDto customerDto,Long customerId) ;
 
     CustomerFetchResponseDto fetchCustomerById(Long customerId);
 

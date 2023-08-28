@@ -84,14 +84,24 @@ public class AccountServiceImpl implements AccountService {
 	 * Fetch account details of a customer by AccountNumber as input..
 	 */
 	@Override
-	public AccountResponseDto fetchByAccountNumber(Long accountNumber) throws ServiceException {
-		Optional<AccountDetails> accountDetails = Optional
-				.ofNullable(iAccountRepository.findByAccountNumber(accountNumber));
-		if (!accountDetails.isEmpty()) {
-			AccountResponseDto responseDto = commonUtils.accountDetailsToAccountResponseDto(accountDetails.get());
-			return responseDto;
-		} else {
-			throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
+	public AccountResponseDto fetchByAccountNumber(Long customerId, Long accountNumber) throws ServiceException {
+
+		Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
+
+		if(!customerDetails.isEmpty()) {
+
+
+			Optional<AccountDetails> accountDetails = Optional
+					.ofNullable(iAccountRepository.findByAccountNumber(accountNumber));
+			if (!accountDetails.isEmpty()) {
+				AccountResponseDto responseDto = commonUtils.accountDetailsToAccountResponseDto(accountDetails.get());
+				return responseDto;
+			} else {
+				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
+			}
+		}
+		else{
+			throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
 		}
 	}
 
@@ -122,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
 
 	/* to Update Account details:Balance for a Customer */
 	@Override
-	public AccountResponseDto updateAccount(AccountUpdateDto accountDto, Long customerId)
+	public AccountResponseDto updateAccount(AccountUpdateDto accountDto,Long customerId, Long accountNumber)
 			throws ServiceException {
 		Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
 		if (!customerDetails.isEmpty()) {
@@ -156,8 +166,9 @@ public class AccountServiceImpl implements AccountService {
 		Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
 		logger.info("customer details in deleteAccount:" + customerDetails);
 		if (!customerDetails.isEmpty()) {
+			logger.info("AccountNumber to delete:"+accountNumber);
 			AccountDetails accountDetails = iAccountRepository.findByAccountNumber(accountNumber);
-			logger.info("account details to delete:" + accountDetails);
+			logger.info("account details to delete:"+ iAccountRepository.findByAccountNumber(accountNumber));
 			if (accountDetails != null) {
 				if (accountDetails.getCustomer().getCustomerId() == customerId) {
 					logger.info("deleting successfully");

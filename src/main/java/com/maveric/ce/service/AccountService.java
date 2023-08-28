@@ -12,11 +12,11 @@ public interface AccountService
     AccountResponseDto createAccount(Long customerId, AccountDto accountDto) throws ServiceException;
 
 
-    AccountResponseDto fetchByAccountNumber(Long accountNumber) throws ServiceException;
+    AccountResponseDto fetchByAccountNumber(Long customerId, Long accountNumber) throws ServiceException;
 
     List<AccountResponseDto> fetchAccountByCustomer(Long customerId)throws ServiceException;
     List<AccountResponseDto> fetchAllAccounts() throws ServiceException;
-    AccountResponseDto updateAccount(AccountUpdateDto accountDto, Long customerId) throws ServiceException;
+    AccountResponseDto updateAccount(AccountUpdateDto accountDto,Long customerId, Long accountNumber) throws ServiceException;
 
     String deleteAccount(Long accountNumber, Long customerId) throws ServiceException;
 

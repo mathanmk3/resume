@@ -11,25 +11,25 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/account")
+@RequestMapping("/account")
 public class AccountController {
 
 	@Autowired
 	private AccountService accountService;
 
-	//
+
 	@PostMapping("/create/{customerId}")
 	public AccountResponseDto createAccount(@PathVariable Long customerId, @Valid @RequestBody AccountDto accountDto) {
 
 		return accountService.createAccount(customerId, accountDto);
 	}
 
-	@GetMapping("/{accountId}")
-	public AccountResponseDto fetchAccountByNumber(@PathVariable(name = "accountId") Long accountNumber) {
-		return accountService.fetchByAccountNumber(accountNumber);
+	@GetMapping("/fetch/{customerId}/{accountNumber}")
+	public AccountResponseDto fetchAccountByNumber(@PathVariable(name="customerId") Long customerId ,@PathVariable(name = "accountNumber") Long accountNumber) {
+		return accountService.fetchByAccountNumber(customerId,accountNumber);
 	}
 
-	@GetMapping("/customer/{customerId}")
+	@GetMapping("/fetchAll/{customerId}")
 	public List<AccountResponseDto> fetchAccountByCustomer(@PathVariable(name = "customerId") Long customerId) {
 		return accountService.fetchAccountByCustomer(customerId);
 	}
@@ -39,13 +39,13 @@ public class AccountController {
 		return accountService.fetchAllAccounts();
 	}
 
-	@PutMapping("/update/{customerId}")
-	public AccountResponseDto updateAccount(@Valid @RequestBody AccountUpdateDto accountUpdateDto,
-			@PathVariable Long customerId) {
-		return accountService.updateAccount(accountUpdateDto, customerId);
+	@PutMapping("/update/{customerId}/{accountNumber}")
+	public AccountResponseDto updateAccount(@Valid @RequestBody AccountUpdateDto accountUpdateDto,@PathVariable Long customerId,
+			@PathVariable Long accountNumber) {
+		return accountService.updateAccount(accountUpdateDto, customerId, accountNumber);
 	}
 
-	@DeleteMapping("/delete/{accountNumber}/{customerId}")
+	@DeleteMapping("/delete/{customerId}/{accountNumber}")
 	public String deleteAccount(@PathVariable(name = "accountNumber") Long accountNumber,
 			@PathVariable(name = "customerId") Long customerId) {
 

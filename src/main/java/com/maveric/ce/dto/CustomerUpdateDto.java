@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 public class CustomerUpdateDto {
 
-    @NotNull
-    private Long customerId;
+    /*@NotNull
+    private Long customerId;*/
 
     private String username;
 
