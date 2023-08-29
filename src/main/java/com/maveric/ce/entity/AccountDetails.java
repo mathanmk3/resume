@@ -69,4 +69,14 @@ public class AccountDetails {
                 ", accLastUpdatedAt=" + accLastUpdatedAt +
                 '}';
     }
+
+    public AccountDetails(Long id,Long accountNumber, CurrencyType currencyType) {
+        super();
+        this.id = id;
+        this.accountNumber=accountNumber;
+        this.currencyType = currencyType;
+    }
+
+    public AccountDetails() {
+    }
 }

@@ -51,6 +51,10 @@ public interface IAccountRepository extends JpaRepository<AccountDetails, Long> 
 	@Query("SELECT new com.maveric.ce.entity.AccountDetails(ad.id,ad.accountNumber,ad.currencyType) from AccountDetails ad"
 			+ " INNER JOIN CustomerDetails cd ON cd.customerId=ad.customer.id where cd.email=:customerMailid")
 	Optional<List<AccountDetails>> getCustomerAccount(@Param("customerMailid") String customerMailid);
+
+	@Query("SELECT new com.maveric.ce.entity.AccountDetails(ad.id,ad.accountNumber,ad.currencyType) from AccountDetails ad"
+			+ "  where customer.customerId=:customerid")
+	Optional<List<AccountDetails>> getCustomerAccountByID(@Param("customerid") Long customerid);
 }
 
 

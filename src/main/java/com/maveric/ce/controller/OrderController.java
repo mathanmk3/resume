@@ -8,6 +8,7 @@ import com.maveric.ce.dto.OrderPageDto;
 import com.maveric.ce.dto.WatchListDto;
 import com.maveric.ce.exceptions.SQLExceptions;
 import com.maveric.ce.exceptions.ServiceException;
+import com.maveric.ce.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OrderController {
 	@Autowired
 	OrderResponse response;
 
-	@GetMapping
+	/*@GetMapping
 	public ResponseEntity<List<OrderPageDto>> getOrderPageDetails(HttpServletRequest request)
 			throws ServiceException, SQLException {
 		String token = request.getHeader("Authorization");
@@ -42,9 +43,9 @@ public class OrderController {
 		String getUserMailId = "mathan@gamil.com";
 		List<OrderPageDto> listOfCutsomerAccounts = orderService.getOrderPageDetails(getUserMailId);
 		return new ResponseEntity<>(listOfCutsomerAccounts, HttpStatus.OK);
-	}
+	}*/
 
-	@PostMapping("/placeoder")
+	@PostMapping("/placeorder")
 	public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody OrderDto orderDto, HttpServletRequest request)
 			throws ServiceException, SQLExceptions {
 		OrderDto orderDetails = orderService.newOrder(orderDto);
@@ -59,11 +60,7 @@ public class OrderController {
 	public ResponseEntity<List<WatchListDto>> getWatchList(HttpServletRequest request)
 			throws ServiceException, SQLExceptions {
 		String token = request.getHeader("Authorization");
-
-		// String getUserMailId = JWTUtils.extractUserMailId(token);
-
-		String getUserMailId = "mathan@gamil.com";
-
+		String getUserMailId = JWTUtils.extractUserMailId(token);
 		List<WatchListDto> watchListDetails = orderService.getOrderWatchList(getUserMailId);
 		return new ResponseEntity<>(watchListDetails, HttpStatus.OK);
 

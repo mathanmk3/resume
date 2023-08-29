@@ -19,4 +19,10 @@ public final class ErrorCodes {
 	public  static final String ACCOUNT_ALREADY_EXISTS = "Account Already Exists##409";
 	public static final String CUSTOMER_NOT_FOUND = "Customer Not found##404";
 	public static final String UN_AUTHORIZED = "Unauthorized access##401";
+	public static final String INVALID_TOKEN="Token is invalid##403";
+	public static final String TOKEN_EXPIRED="Token is Expired##403";
+	public static final String Server_Expection ="Server failed to start##500";
+
+	public static final String PAGE_NOT_FOUND ="Page not found";
+
 }

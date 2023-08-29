@@ -17,7 +17,10 @@ public interface CurrencyExchangeOrderService {
 	
 	List<WatchListDto> getOrderWatchList(String customerId) throws ServiceException, HttpServerErrorException, SQLException;
 	
-	List <OrderPageDto> getOrderPageDetails(String customerId) throws ServiceException,ServiceException;
+	List <OrderPageDto> getOrderPageDetails(String mailId) throws ServiceException,ServiceException;
+
+	List <OrderPageDto> getOrderPageDetails(Long customerId) throws ServiceException,ServiceException;
+
 
 
 }

@@ -12,14 +12,17 @@ import com.maveric.ce.dto.WatchListDto;
 import com.maveric.ce.entity.AccountDetails;
 import com.maveric.ce.exceptions.ErrorCodes;
 import com.maveric.ce.exceptions.SQLExceptions;
+import com.maveric.ce.exceptions.ServiceException;
 import com.maveric.ce.repository.IAccountRepository;
 import com.maveric.ce.utils.CommonUtils;
 import com.maveric.ce.utils.DateUtils;
 import com.maveric.ce.utils.OrderUtils;
-import org.hibernate.service.spi.ServiceException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.maveric.ce.entity.CurrencyExchangeOrders;
 import com.maveric.ce.repository.CurrencyExchangeOrdersRepo;
@@ -39,13 +42,13 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	ModelMapper modelMapper;
 	@Autowired
 	OrderUtils orderUtils;
-	
+
 	/**
 	 * @param customerMailId is passed to retrieve the Customer account details
 	 * @return list of customer accounts
 	 * @throws ServiceException when Account not found
 	 * @throws SQLExceptions when Connection issue.
-	 * 
+	 *
 	 */
 	@Override
 	public List<OrderPageDto> getOrderPageDetails(String customerMailId) throws ServiceException {
@@ -61,8 +64,28 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 				listOfAccount.add(dto);
 			}
 			return listOfAccount;
-		} catch (SQLExceptions he) {
-			he.getRootCause();
+		} catch (DataAccessException he) {
+			he.printStackTrace();
+			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
+		}
+
+	}
+	@Override
+	public List<OrderPageDto> getOrderPageDetails(Long customerMailId) throws ServiceException {
+		List<OrderPageDto> listOfAccount = new LinkedList<>();
+		try {
+			List<AccountDetails> listOfCustomerAccounts = customerAccountRepo.getCustomerAccountByID(customerMailId)
+					.orElseThrow(() -> new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND));
+			if (listOfCustomerAccounts.isEmpty()) {
+				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
+			}
+			for (AccountDetails accounts : listOfCustomerAccounts) {
+				OrderPageDto dto = CommonUtils.getMapper(accounts, OrderPageDto.class);
+				listOfAccount.add(dto);
+			}
+			return listOfAccount;
+		} catch (DataAccessException he) {
+			he.printStackTrace();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		}
 
@@ -75,7 +98,7 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	 * @apiNote Update the Customer account balance once order is placed.
 	 * @throws ServiceException when Account not found
 	 * @throws NullPointerException when Empty response from Currency API.
-	 * 
+	 *
 	 */
 	@Override
 	public OrderDto newOrder(OrderDto orderDto) throws ServiceException {
@@ -98,8 +121,9 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 					return ordermap;
 				}
 			}
-		} catch (SQLExceptions he) {
-			he.getRootCause();
+		} catch (DataAccessException he) {
+
+			he.printStackTrace();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		} catch (NullPointerException e) {
 			throw new ServiceException(e.getLocalizedMessage());
@@ -107,16 +131,19 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 		}
 		return ordermap;
 	}
+
 	/**
 	 * @param customerMailId is passed to retrieve the lasted order.
 	 * @return List of customer orders
 	 * @throws ServiceException when No orders found
 	 * @throws NullPointerException when Empty response from Currency API.
-	 * 
+	 *
 	 */
 	@Override
 	public List<WatchListDto> getOrderWatchList(String customerMailId) throws ServiceException {
 		try {
+			
+
 			List<WatchListDto> orderWatchList = new LinkedList<>();
 			List<CurrencyExchangeOrders> listOfOrder = orderRepo.getLatestCurrencyPair(customerMailId)
 					.orElseThrow(() -> new ServiceException("NO_ORDER_FOUND"));
@@ -126,11 +153,12 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 					orderWatchList.add(dto);
 				}
 			} else {
+				System.out.println(ErrorCodes.NO_ORDER_FOUND);
 				throw new ServiceException(ErrorCodes.NO_ORDER_FOUND);
 			}
 			return orderWatchList;
-		} catch (SQLExceptions he) {
-			he.getRootCause();
+		} catch (DataAccessException he) {
+			he.printStackTrace();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		}
 
