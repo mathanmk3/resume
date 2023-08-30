@@ -35,7 +35,7 @@ public class AuthorizationSecurity extends OncePerRequestFilter {
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServiceException, java.io.IOException, ServletException {
 		String uri = request.getRequestURI();
-		if (uri.startsWith("/login") || uri.equals("/authenticate/login")) {
+		if (uri.startsWith("/login") || uri.equals("/authenticate/login") || uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui")) {
 			filterChain.doFilter(request, response);
 			return;
 		}

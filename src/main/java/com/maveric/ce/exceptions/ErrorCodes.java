@@ -25,4 +25,6 @@ public final class ErrorCodes {
 
 	public static final String PAGE_NOT_FOUND ="Page not found";
 
+	public static final String EMAIL_ALREADY_EXISTS ="Email already exists##226";
+
 }

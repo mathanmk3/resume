@@ -16,8 +16,10 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,18 +40,31 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     @Override
     public CustomerResponseDto createCustomer(CustomerDto customerDto) {
 
         CustomerDetails customerDetails = commonUtils.customerDtoToCustomerDetails(customerDto);
         logger.info("CustomerDetails: ",customerDetails);
+        // Encode password using password encoder.
+        String pp=passwordEncoder.encode(customerDto.getPassword());
+        logger.info("passwordEncoder.encode(customerDto.getPassword())---> "+pp);
 
+        customerDetails.setPassword(passwordEncoder.encode(customerDto.getPassword()));
         customerDetails.setCreatedAt( LocalDateTime.now());
-
-        CustomerDetails savedCustomerDetails= iCustomerRepository.save(customerDetails);
+        logger.info("before save");
+        CustomerDetails savedCustomerDetails = null;
+        try {
+             savedCustomerDetails = iCustomerRepository.save(customerDetails);
+            logger.info("before dto");
+        }
+        catch(Exception exception){
+            throw new ServiceException(ErrorCodes.EMAIL_ALREADY_EXISTS);
+        }
         CustomerResponseDto savedCustomerDto = commonUtils.customerToCustomerResponseDto(savedCustomerDetails);;
-
         return savedCustomerDto;
     }
 
@@ -84,7 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
                 customerDetails.setEmail(customerDto.getEmail());
 
             if (customerDto.getPassword() != null && !customerDto.getPassword().equals(""))
-                customerDetails.setPassword(customerDto.getPassword());
+                customerDetails.setPassword(passwordEncoder.encode(customerDto.getPassword()));
 
             if (customerDto.getPhoneNumber() != null && !customerDto.getPhoneNumber().equals(""))
                 customerDetails.setPhoneNumber(customerDto.getPhoneNumber());

@@ -34,6 +34,7 @@ public class AccountController {
 		return accountService.fetchAccountByCustomer(customerId);
 	}
 
+	// this is not used since we cant list all accounts without customer input.
 	@GetMapping("/fetchAll")
 	public List<AccountResponseDto> fetchAllAccounts() {
 		return accountService.fetchAllAccounts();

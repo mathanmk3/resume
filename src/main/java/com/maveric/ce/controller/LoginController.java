@@ -26,7 +26,7 @@ public class LoginController {
     @PostMapping("/authenticate/login")
     public ResponseEntity<LoginResponse> createCustomer(@Valid @RequestBody LoginDto dto, HttpServletRequest request,
                                                         HttpServletResponse response) {
-        LoginResponse userToken = loginImpl.findUserByMailId(dto.getEmailId(), request);
+        LoginResponse userToken = loginImpl.findUserByMailId(dto, request);
         return new ResponseEntity<>(userToken, HttpStatus.OK);
     }
 
