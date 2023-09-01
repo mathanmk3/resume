@@ -39,7 +39,7 @@ public class LoginServiceImpl implements UserDetailsService, LoginService {
 	
 
 	public LoginResponse findUserByMailId(LoginDto loginDto, HttpServletRequest request) throws ServiceException {
-		Optional<CustomerDetails> userDetails = customerRepo.findByEmail(loginDto.getEmailId());
+		Optional<CustomerDetails> userDetails = customerRepo.findByEmail(loginDto.getEmail());
 		UserDetailsImpl dto = new UserDetailsImpl();
 		if (userDetails.isPresent()) {
 
