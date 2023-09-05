@@ -49,6 +49,7 @@ public class AuthenticationSecurity {
                 .authorizeHttpRequests(request -> request.requestMatchers(commonUrl).permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers(CUSTOMER_WISHLIST).hasRole("CUSTOMER"))
                 .authorizeHttpRequests(request -> request.requestMatchers(SUPER_WISHLIST).hasRole("SUPERUSER"))
+                .authorizeHttpRequests(request -> request.requestMatchers(AUTH_WISHLIST).permitAll())
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authorizationSecurity, UsernamePasswordAuthenticationFilter.class)
@@ -69,5 +70,13 @@ public class AuthenticationSecurity {
         return source;
 
     }
+
+    private static final String[]  AUTH_WISHLIST = {
+            "/api/v1/auth/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
 }
