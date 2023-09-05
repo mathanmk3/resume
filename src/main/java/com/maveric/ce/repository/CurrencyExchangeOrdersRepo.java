@@ -14,8 +14,11 @@ import com.maveric.ce.entity.CurrencyExchangeOrders;
 
 public interface CurrencyExchangeOrdersRepo extends JpaRepository<CurrencyExchangeOrders, Long> {
 
-	@Query(value = "SELECT new com.maveric.ce.entity.CurrencyExchangeOrders(ce.id,ce.customer,ce.orderToCurrencyType,ce.orderFromCurrencyType,ce.currencyRate,ce.orderAmount) from CurrencyExchangeOrders ce"
-			+ " INNER JOIN CustomerDetails cd ON cd.customerId= ce.customer.customerId WHERE  cd.email=:customerMailId ORDER BY ce.id DESC")
+	@Query(value = "SELECT distinct new com.maveric.ce.entity.CurrencyExchangeOrders(ce.id,ce.customer,ce.orderToCurrencyType,ce.orderFromCurrencyType,ce.currencyRate,ce.orderAmount," +
+			"	ce.orderFromAccountId, ce.orderToAccountId,ce.orderExchangeDateTime) from CurrencyExchangeOrders ce"
+			+ " INNER JOIN CustomerDetails cd ON cd.customerId= ce.customer.customerId" +
+			"   INNER JOIN AccountDetails ad ON ce.orderToAccountId.Id= ad.Id OR ce.orderFromAccountId.Id =ad.Id" +
+			"   WHERE  cd.email=:customerMailId ORDER BY ce.id DESC" )
 	Optional<List<CurrencyExchangeOrders>> getLatestCurrencyPair(@Param("customerMailId") String customerMailId);
 
 	@Transactional

@@ -65,7 +65,8 @@ public class CurrencyExchangeOrders {
 	private String orderExchangeDateTime;
 
 	public CurrencyExchangeOrders(Long id,CustomerDetails customer, String orderToCurrencyType,
-			String orderFromCurrencyType, BigDecimal currencyRate, double orderAmount) {
+			String orderFromCurrencyType, BigDecimal currencyRate, double orderAmount,AccountDetails orderFromAccountId
+			,AccountDetails orderToAccountId,String orderExchangeDateTime) {
 		super();
 		this.id=id;
 		this.customer = customer;
@@ -73,6 +74,10 @@ public class CurrencyExchangeOrders {
 		this.orderFromCurrencyType = orderFromCurrencyType;
 		this.currencyRate = currencyRate;
 		this.orderAmount = orderAmount;
+		this.orderToAccountId=orderToAccountId;
+		this.orderFromAccountId=orderFromAccountId;
+		this.orderExchangeDateTime=orderExchangeDateTime;
+
  
 	}
 

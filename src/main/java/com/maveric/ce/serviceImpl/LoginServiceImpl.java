@@ -56,6 +56,8 @@ public class LoginServiceImpl implements UserDetailsService, LoginService {
 				authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
 				dto.setAuthorities(authorities);
 				jwtUtils.generateToken(dto, request, loginResponse);
+				loginResponse.setRole(userDetails.get().getRolesENum().toString());
+				loginResponse.setCustomerId(userDetails.get().getCustomerId());
 			}
 			else{
 				logger.info("Else:Invalid credentials");

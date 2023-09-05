@@ -87,9 +87,6 @@ public class OrderUtils {
 					.getAccountBalance(orderDto.getCustomerId(), orderDto.getOrderFromAccountId())
 					.orElseThrow(() -> new ServiceException(ErrorCodes.BALANCE_NOT_FOUND, HttpStatus.BAD_REQUEST));
 
-			BigDecimal orderToExistingBalance = customerAccountRepo
-					.getAccountBalance(orderDto.getCustomerId(), orderDto.getOrderToAccountId())
-					.orElseThrow(() -> new ServiceException(ErrorCodes.BALANCE_NOT_FOUND, HttpStatus.BAD_REQUEST));
 
 			boolean debitid = (customerAccountRepo
 					.updateDebitDetails(orderDto.getCustomerId(), orderDto.getOrderFromAccountId(),
@@ -97,6 +94,11 @@ public class OrderUtils {
 							DateUtils.currentDateTimeFormat())
 					.orElseThrow(() -> new ServiceException(ErrorCodes.ERROR_IN_UPDATING_BALANCE,
 							HttpStatus.INTERNAL_SERVER_ERROR))) > 0;
+
+			BigDecimal orderToExistingBalance = customerAccountRepo
+					.getAccountBalance(orderDto.getCustomerId(), orderDto.getOrderToAccountId())
+					.orElseThrow(() -> new ServiceException(ErrorCodes.BALANCE_NOT_FOUND, HttpStatus.BAD_REQUEST));
+
 
 			boolean creditid = (customerAccountRepo
 					.updateCreditDetails(orderDto.getCustomerId(), orderDto.getOrderToAccountId(),

@@ -26,10 +26,10 @@ public class CustomerController
     @PostMapping("/create")
     public ResponseEntity<CustomerResponseDto> createCustomer(@Valid @RequestBody CustomerDto customerDto)
     {
-        return new ResponseEntity<>(customerService.createCustomer(customerDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(customerService.createCustomer(customerDto), HttpStatus.OK);
     }
     @DeleteMapping("/delete/{customerId}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable(name = "customerId") Long customerId)
+    public ResponseEntity<Boolean> deleteCustomer(@PathVariable(name = "customerId") Long customerId)
     {
         return new ResponseEntity<>(customerService.deleteCustomer(customerId),HttpStatus.OK);
     }

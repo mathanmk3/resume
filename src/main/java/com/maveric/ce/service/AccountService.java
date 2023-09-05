@@ -18,7 +18,7 @@ public interface AccountService
     List<AccountResponseDto> fetchAllAccounts() throws ServiceException;
     AccountResponseDto updateAccount(AccountUpdateDto accountDto,Long customerId, Long accountNumber) throws ServiceException;
 
-    String deleteAccount(Long accountNumber, Long customerId) throws ServiceException;
+    Boolean deleteAccount(Long accountNumber, Long customerId) throws ServiceException;
 
 
 }

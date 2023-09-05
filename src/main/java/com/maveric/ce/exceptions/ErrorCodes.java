@@ -25,6 +25,8 @@ public final class ErrorCodes {
 
 	public static final String PAGE_NOT_FOUND ="Page not found";
 
-	public static final String EMAIL_ALREADY_EXISTS ="Email already exists##226";
+	public static final String EMAIL_ALREADY_EXISTS ="Email already exists##404";
+
+	public static final String SAME_CURRENCY_FOUND ="Cannot Convert Same Currency Type##406";
 
 }

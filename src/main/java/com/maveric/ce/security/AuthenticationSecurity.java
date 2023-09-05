@@ -34,6 +34,9 @@ public class AuthenticationSecurity {
     @Value("${commonUrl}")
     String commonUrl;
 
+    @Value("${crossOriginUrl}")
+    String crossOriginUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HttpServletRequest requestt,
                                                    HttpServletResponse response) throws Exception {
@@ -56,9 +59,8 @@ public class AuthenticationSecurity {
 
     @Bean
     public CorsConfigurationSource corsOrginConfig() {
-        System.out.println("allowinf cros");
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200",commonUrl));
+        config.setAllowedOrigins(List.of(crossOriginUrl,commonUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

@@ -107,6 +107,10 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 			if (orderUtils.checkSufficientBalance(orderDto.getOrderAmount(), orderDto.getCustomerId(),
 					orderDto.getOrderFromAccountId())) {
 				orderDto.setOrderPlacedDateTime(DateUtils.currentDateTimeFormat());
+				// check if both currency same
+				if(orderDto.getOrderToCurrencyType().equalsIgnoreCase(orderDto.getOrderFromCurrencyType())){
+					throw new ServiceException(ErrorCodes.SAME_CURRENCY_FOUND);
+				}
 				orderUtils.currencyRateFromApi(orderDto);
 				orderDto.setSellingValue(orderDto.getOrderAmount());
 				orderDto.setBuyingValue(orderDto.getOrderAmount().multiply(orderDto.getCurrencyRate()));

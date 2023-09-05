@@ -14,6 +14,9 @@ public class WatchListDto {
 	private String orderFromCurrencyType;
 	private double currencyRate;
 	private double orderAmount;
+	private  Long fromAccountNumber;
+	private Long toAccountNumber;
+	private String exchangeDateTime;
 	
 	
 }

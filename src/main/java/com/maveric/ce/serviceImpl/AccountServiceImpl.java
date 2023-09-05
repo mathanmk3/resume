@@ -121,13 +121,13 @@ public class AccountServiceImpl implements AccountService {
 
 				return accountDtoList;
 			} else {
-				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
+				//throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
 			}
 
 		} else {
 			throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
 		}
-
+		return null;
 	}
 
 	/* to Update Account details:Balance for a Customer */
@@ -161,7 +161,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	/* To delete account of a customer */
-	public String deleteAccount(Long accountNumber, Long customerId) throws ServiceException {
+	public Boolean deleteAccount(Long accountNumber, Long customerId) throws ServiceException {
 		logger.info("in delete");
 		Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
 		logger.info("customer details in deleteAccount:" + customerDetails);
@@ -174,6 +174,7 @@ public class AccountServiceImpl implements AccountService {
 					logger.info("deleting successfully");
 					iAccountRepository.deleteByAccountNumber(accountNumber);
 					logger.info("deleted  successfully");
+					return Boolean.TRUE;
 				} else {
 					throw new ServiceException(ErrorCodes.UN_AUTHORIZED);
 				}
@@ -186,7 +187,6 @@ public class AccountServiceImpl implements AccountService {
 			throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
 		}
 
-		return "AccountNumber :" + accountNumber + "  Deleted Successfsully";
 	}
 
 	/*

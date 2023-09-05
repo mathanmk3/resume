@@ -14,7 +14,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class AccountDetails {
+public class
+AccountDetails {
 
 
     @Id

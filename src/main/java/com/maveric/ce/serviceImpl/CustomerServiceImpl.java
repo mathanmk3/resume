@@ -52,30 +52,34 @@ public class CustomerServiceImpl implements CustomerService {
         // Encode password using password encoder.
         String pp=passwordEncoder.encode(customerDto.getPassword());
         logger.info("passwordEncoder.encode(customerDto.getPassword())---> "+pp);
-
         customerDetails.setPassword(passwordEncoder.encode(customerDto.getPassword()));
         customerDetails.setCreatedAt( LocalDateTime.now());
         logger.info("before save");
         CustomerDetails savedCustomerDetails = null;
-        try {
-             savedCustomerDetails = iCustomerRepository.save(customerDetails);
+        Optional<CustomerDetails> customerDetails1 = iCustomerRepository.findByEmail(customerDto.getEmail());
+        logger.info("FindBy email custome robject:"+customerDetails1);
+        if(customerDetails1.isEmpty()){
             logger.info("before dto");
+            savedCustomerDetails = iCustomerRepository.save(customerDetails);
+            CustomerResponseDto savedCustomerDto = commonUtils.customerToCustomerResponseDto(savedCustomerDetails);;
+            return savedCustomerDto;
         }
-        catch(Exception exception){
+        else{
+            logger.info("Inside else emial exist");
             throw new ServiceException(ErrorCodes.EMAIL_ALREADY_EXISTS);
         }
-        CustomerResponseDto savedCustomerDto = commonUtils.customerToCustomerResponseDto(savedCustomerDetails);;
-        return savedCustomerDto;
     }
 
-    public String deleteCustomer(Long customerId) {
+
+    public Boolean deleteCustomer(Long customerId) {
         Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
         logger.info("after find customer by id in delete:",customerDetails);
         logger.info("delete customer object:"+customerDetails);
         if (!customerDetails.isEmpty()) {
             logger.info("customer found to delete");
             iCustomerRepository.deleteById(customerDetails.get().getCustomerId());
-            return "Customer with Id: " + customerId + " deleted successfully";
+            logger.info("Customer with Id: " + customerId + " deleted successfully");
+            return Boolean.TRUE;
         } else {
             logger.info("Customer not found to delete");
             throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
@@ -91,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
         logger.info("update customer customer found: ",customerDetails1);
         System.out.println("update customer object:"+customerDetails1);
         if (!customerDetails1.isEmpty()) {
-           logger.info("customer found with id");
+            logger.info("customer found with id");
             CustomerDetails customerDetails = customerDetails1.get();
             if (customerDto.getUsername() != null && !customerDto.getUsername().equals(""))
                 customerDetails.setUsername(customerDto.getUsername());
@@ -105,6 +109,13 @@ public class CustomerServiceImpl implements CustomerService {
                 customerDetails.setPhoneNumber(customerDto.getPhoneNumber());
 
             customerDetails.setLastUpdatedAt(LocalDateTime.now());
+
+            Optional<CustomerDetails> userEmailExists = null;
+            userEmailExists = iCustomerRepository.findByEmail(customerDetails.getEmail());
+            if(!userEmailExists.isEmpty() && userEmailExists.get().getCustomerId()!= customerId ){
+                throw new ServiceException(ErrorCodes.EMAIL_ALREADY_EXISTS);
+            }
+
             CustomerDetails updatedCustomer = iCustomerRepository.save(customerDetails);
             logger.info("updated customer:" + updatedCustomer);
 

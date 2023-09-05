@@ -10,7 +10,7 @@ import java.util.List;
 public interface CustomerService
 {
     CustomerResponseDto createCustomer(CustomerDto customerDto);
-    String deleteCustomer(Long customerId);
+    Boolean deleteCustomer(Long customerId);
 
     CustomerResponseDto updateCustomer(CustomerUpdateDto customerDto,Long customerId) ;
 
