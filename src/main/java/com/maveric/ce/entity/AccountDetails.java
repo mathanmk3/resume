@@ -2,8 +2,7 @@ package com.maveric.ce.entity;
 
 import com.maveric.ce.userenum.CurrencyType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
@@ -14,6 +13,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class
 AccountDetails {
 

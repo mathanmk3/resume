@@ -4,8 +4,7 @@ package com.maveric.ce.entity;
 import com.maveric.ce.userenum.Gender;
 import com.maveric.ce.userenum.RolesEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +12,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerDetails {
 
     @Id
