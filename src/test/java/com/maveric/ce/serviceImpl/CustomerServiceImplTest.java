@@ -119,7 +119,7 @@ class CustomerServiceImplTest {
     @Test
     void testDeleteCustomerNegative() {
         Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
-        doThrow(new ServiceException("An error occurred")).when(iCustomerRepository).deleteById(Mockito.<Long>any());
+        doThrow(new ServiceException("Customer Not found")).when(iCustomerRepository).deleteById(Mockito.<Long>any());
         when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
         customerServiceImpl.deleteCustomer(1L);
     }
@@ -154,7 +154,6 @@ class CustomerServiceImplTest {
         when(iCustomerRepository.save(Mockito.<CustomerDetails>any())).thenReturn(customerDetails);
         when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult2);
         when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
-        when(passwordEncoder.encode(Mockito.<CharSequence>any())).thenThrow(new ServiceException("An error occurred"));
         CustomerUpdateDto customerDto = new CustomerUpdateDto();
         customerDto.setEmail("mathan@gmail.com");
         customerDto.setPassword("password");
@@ -179,7 +178,7 @@ class CustomerServiceImplTest {
         when(commonUtils.customerToCustomerFetchResponseDto(Mockito.<CustomerDetails>any()))
                 .thenReturn(customerFetchResponseDto);
         when(iAccountRepository.findByCustomer_CustomerId(Mockito.<Long>any()))
-                .thenThrow(new ServiceException("An error occurred"));
+                .thenThrow(new ServiceException("Customer Not found"));
 
         Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
         when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
