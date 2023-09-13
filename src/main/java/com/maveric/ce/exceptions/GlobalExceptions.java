@@ -3,6 +3,7 @@ package com.maveric.ce.exceptions;
 import com.maveric.ce.dto.ErrorDto;
 
 import com.maveric.ce.serviceImpl.CustomerServiceImpl;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.ObjectError;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -104,5 +107,14 @@ public class GlobalExceptions   {
 		errors.setErrorCode("500");
 		return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorDto> handle(ConstraintViolationException exception) {
+		ErrorDto errors = new ErrorDto();
+		String errorMessage = new ArrayList<>(exception.getConstraintViolations()).get(0).getMessage();
+		errors.setErrorMessgae(errorMessage);
+		errors.setErrorCode("500");
+		return new ResponseEntity<>(errors, null, HttpStatus.BAD_REQUEST);
 	}
 }

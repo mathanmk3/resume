@@ -42,10 +42,10 @@ public class AccountController {
 	}
 
 	// this is not used since we cant list all accounts without customer input.
-	@GetMapping("/fetchAll")
+	/*@GetMapping("/fetchAll")
 	public ResponseEntity<List<AccountResponseDto>>fetchAllAccounts() {
 		return  new ResponseEntity<>(accountService.fetchAllAccounts(),HttpStatus.OK);
-	}
+	}*/
 
 	@PutMapping("/update/{customerId}/{accountNumber}")
 	public ResponseEntity<AccountResponseDto> updateAccount(@Valid @RequestBody AccountUpdateDto accountUpdateDto,@PathVariable Long customerId,

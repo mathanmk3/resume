@@ -18,6 +18,8 @@ import com.maveric.ce.utils.CommonUtils;
 import com.maveric.ce.utils.DateUtils;
 import com.maveric.ce.utils.OrderUtils;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -30,6 +32,7 @@ import com.maveric.ce.service.CurrencyExchangeOrderService;
 
 @Service
 public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderService {
+	private static final Logger logger = LoggerFactory.getLogger(CurrencyExchangeOrderServiceImpl.class);
 
 	@Value("${currencyApi}")
 	String currencyApi;
@@ -70,26 +73,6 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 		}
 
 	}
-	@Override
-	public List<OrderPageDto> getOrderPageDetails(Long customerMailId) throws ServiceException {
-		List<OrderPageDto> listOfAccount = new LinkedList<>();
-		try {
-			List<AccountDetails> listOfCustomerAccounts = customerAccountRepo.getCustomerAccountByID(customerMailId)
-					.orElseThrow(() -> new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND));
-			if (listOfCustomerAccounts.isEmpty()) {
-				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
-			}
-			for (AccountDetails accounts : listOfCustomerAccounts) {
-				OrderPageDto dto = CommonUtils.getMapper(accounts, OrderPageDto.class);
-				listOfAccount.add(dto);
-			}
-			return listOfAccount;
-		} catch (DataAccessException he) {
-			he.printStackTrace();
-			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
-		}
-
-	}
 
 	/**
 	 * @param orderDto is passed to place the exchange orders
@@ -102,10 +85,13 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	 */
 	@Override
 	public OrderDto newOrder(OrderDto orderDto) throws ServiceException {
+		logger.info("called newOrder() in Impl");
+		logger.info("Orderdto object:"+orderDto);
 		OrderDto ordermap = new OrderDto();
 		try {
 			if (orderUtils.checkSufficientBalance(orderDto.getOrderAmount(), orderDto.getCustomerId(),
 					orderDto.getOrderFromAccountId())) {
+				logger.info("inside if newOrder()");
 				orderDto.setOrderPlacedDateTime(DateUtils.currentDateTimeFormat());
 				// check if both currency same
 				if(orderDto.getOrderToCurrencyType().equalsIgnoreCase(orderDto.getOrderFromCurrencyType())){
@@ -113,7 +99,9 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 				}
 				orderUtils.currencyRateFromApi(orderDto);
 				orderDto.setSellingValue(orderDto.getOrderAmount());
+				logger.info("before multiply in newOrder()");
 				orderDto.setBuyingValue(orderDto.getOrderAmount().multiply(orderDto.getCurrencyRate()));
+				logger.info("after multiply in newOrder()");
 				orderDto.setStatus("1");
 				CurrencyExchangeOrders map = CommonUtils.getMapper(orderDto, CurrencyExchangeOrders.class);
 

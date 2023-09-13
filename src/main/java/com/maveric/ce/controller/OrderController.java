@@ -9,6 +9,8 @@ import com.maveric.ce.dto.WatchListDto;
 import com.maveric.ce.exceptions.SQLExceptions;
 import com.maveric.ce.exceptions.ServiceException;
 import com.maveric.ce.utils.JWTUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +31,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/orders")
 @Validated
 public class OrderController {
+
+	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 	@Autowired
-	CurrencyExchangeOrderServiceImpl orderService;
-	@Autowired
-	OrderResponse response;
+	CurrencyExchangeOrderServiceImpl currencyExchangeOrderService;
+	/*@Autowired
+	OrderResponse response;*/
 
 	/*@GetMapping
 	public ResponseEntity<List<OrderPageDto>> getOrderPageDetails(HttpServletRequest request)
@@ -48,11 +52,19 @@ public class OrderController {
 	@PostMapping("/placeorder")
 	public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody OrderDto orderDto, HttpServletRequest request)
 			throws ServiceException, SQLExceptions {
-		OrderDto orderDetails = orderService.newOrder(orderDto);
+		OrderDto orderDetails = currencyExchangeOrderService.newOrder(orderDto);
+		OrderResponse response = new OrderResponse();
 		if (orderDetails != null) {
+			logger.info("response object:"+response);
+			logger.info("Called inside if place order");
 			response.setMessage("Currency Exchanges");
 			response.setOrderData(orderDetails);
+
+			logger.info("response:"+response.getMessage());
+			logger.info(""+response.getOrderData());
 		}
+		logger.info("before returning placeorder");
+		logger.info("response:"+response.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -61,7 +73,8 @@ public class OrderController {
 			throws ServiceException, SQLExceptions {
 		String token = request.getHeader("Authorization");
 		String getUserMailId = JWTUtils.extractUserMailId(token);
-		List<WatchListDto> watchListDetails = orderService.getOrderWatchList(getUserMailId);
+		logger.info("emaild:"+getUserMailId);
+		List<WatchListDto> watchListDetails = currencyExchangeOrderService.getOrderWatchList(getUserMailId);
 		return new ResponseEntity<>(watchListDetails, HttpStatus.OK);
 
 	}

@@ -2,13 +2,17 @@ package com.maveric.ce.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maveric.ce.userenum.CurrencyType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountResponseDto {
 
     private Long id;

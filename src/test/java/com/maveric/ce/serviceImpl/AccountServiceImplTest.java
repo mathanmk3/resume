@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.maveric.ce.CurrencyExchangeApplication;
 import com.maveric.ce.dto.*;
 import com.maveric.ce.entity.AccountDetails;
 import com.maveric.ce.entity.AccountNumGenerator;
@@ -33,6 +34,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,6 +45,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = {AccountServiceImpl.class})
 @ExtendWith(SpringExtension.class)
 public class AccountServiceImplTest {
+
+    private static final Logger logger= LoggerFactory.getLogger(AccountServiceImplTest.class);
     @Autowired
     private AccountServiceImpl accountServiceImpl;
     @MockBean
@@ -74,6 +79,7 @@ public class AccountServiceImplTest {
 
         accountDetails.setCustomer(customerDetails);
         accountDetails.setAccountNumber(201011L);
+        accountDetails.setBalance(new BigDecimal(1088));
 
         accountResponseDto.setAccCreatedAt(LocalDate.of(2023, 7, 1).atStartOfDay());
         accountResponseDto.setAccHolderName("veera kalyan");
@@ -86,36 +92,35 @@ public class AccountServiceImplTest {
     @Test
     public void testCreateAccount() throws ServiceException {
 
-
-        when(commonUtils.accountDetailsToAccountResponseDto(Mockito.<AccountDetails>any()))
-                .thenReturn(accountResponseDto);
-        when(commonUtils.accountDtoToAccountDetails(Mockito.<AccountDto>any())).thenReturn(new AccountDetails());
-
-        AccountNumGenerator accountNumGenerator = new AccountNumGenerator();
-        accountNumGenerator.setAccSequence(1L);
-        when(iAccNumGenRepository.save(Mockito.<AccountNumGenerator>any())).thenReturn(accountNumGenerator);
-        when(
-                iAccountRepository.findByCustomer_CustomerIdAndCurrencyType(Mockito.<Long>any(), Mockito.<CurrencyType>any()))
-                .thenReturn(new AccountDetails());
-        when(iAccountRepository.save(Mockito.<AccountDetails>any())).thenReturn(new AccountDetails());
-        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(Optional.empty());
-
         AccountDto accountDto = new AccountDto();
 
         accountDto.setBalance(BigDecimal.valueOf(1L));
         accountDto.setCurrencyType(CurrencyType.INR);
+
+        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(Optional.of(new CustomerDetails()));
+        when(iAccountRepository.findByCustomer_CustomerIdAndCurrencyType(Mockito.<Long>any(), Mockito.<CurrencyType>any()))
+                .thenReturn(null);
+
+        when(commonUtils.accountDtoToAccountDetails(Mockito.<AccountDto>any())).thenReturn(accountDetails);
+        when(commonUtils.accountDetailsToAccountResponseDto(Mockito.<AccountDetails>any()))
+                .thenReturn(accountResponseDto);
+
+
+        AccountNumGenerator accountNumGenerator = new AccountNumGenerator();
+        accountNumGenerator.setAccSequence(1L);
+        when(iAccNumGenRepository.save(Mockito.<AccountNumGenerator>any())).thenReturn(accountNumGenerator);
+
+        when(iAccountRepository.save(Mockito.<AccountDetails>any())).thenReturn(accountDetails);
+
         AccountDto AccountDtoMock = mock(AccountDto.class);
 
         AccountResponseDto accountDetails = accountServiceImpl.createAccount(Mockito.<Long>any(), AccountDtoMock);
-       // List<OrderPageDto> expected = service.getOrderPageDetails(Mockito.anyString());
 
         assertSame(accountResponseDto, accountDetails);
         assertEquals(accountResponseDto, accountDetails);
         verify(commonUtils).accountDetailsToAccountResponseDto(Mockito.<AccountDetails>any());
-        verify(iAccountRepository).findByAccountNumber(Mockito.<Long>any());
-        System.out.println("-------------------------------1");
         verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
-        System.out.println("-------------------------------2");
+        verify(iAccountRepository).findByCustomer_CustomerIdAndCurrencyType(Mockito.<Long>any(),Mockito.<CurrencyType>any());
 
     }
     @Test
@@ -144,25 +149,30 @@ public class AccountServiceImplTest {
     }
     @Test
     public void testUpdateAccount() throws ServiceException {
-        when(iAccountRepository.findByAccountNumber(Mockito.<Long>any())).thenReturn(new AccountDetails());
+        when(iAccountRepository.findByAccountNumber(Mockito.<Long>any())).thenReturn(accountDetails);
         Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
         when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
 
         AccountUpdateDto accountDto = new AccountUpdateDto();
-        accountDto.setAccountNumber(1234567890L);
+        accountDto.setAccountNumber(201011L);
         accountDto.setBalance(BigDecimal.valueOf(1L));
 
-        accountServiceImpl.updateAccount(accountDto, 1L, 1234567890L);
+
+        when(commonUtils.accountDetailsToAccountResponseDto(Mockito.<AccountDetails>any())).thenReturn(accountResponseDto);
+
+        assertEquals(accountResponseDto,accountServiceImpl.updateAccount(accountDto, 1L, 1234567890L));
     }
 
     @Test
     public void testDeleteAccount() throws ServiceException {
-        when(iAccountRepository.findByAccountNumber(Mockito.<Long>any())).thenReturn(new AccountDetails());
+
+
+        when(iAccountRepository.findByAccountNumber(Mockito.<Long>any())).thenReturn(accountDetails);
         Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
         when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
-        accountServiceImpl.deleteAccount(201011L, 1L);
+        assertTrue(accountServiceImpl.deleteAccount(201011L, 1L));
         verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
-        verify(accountServiceImpl).deleteAccount(Mockito.<Long>any(),Mockito.<Long>any());
+
     }
     @Test
     public void testFetchAllAccounts() throws ServiceException {

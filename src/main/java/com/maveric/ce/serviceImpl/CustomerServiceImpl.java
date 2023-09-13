@@ -46,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseDto createCustomer(CustomerDto customerDto) {
-
+        System.out.println("Create Customer is called:---------");
         CustomerDetails customerDetails = commonUtils.customerDtoToCustomerDetails(customerDto);
         logger.info("CustomerDetails: ",customerDetails);
         // Encode password using password encoder.

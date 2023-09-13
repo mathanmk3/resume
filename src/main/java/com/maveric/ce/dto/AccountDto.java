@@ -5,7 +5,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -13,6 +15,8 @@ import java.math.BigDecimal;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountDto
 {
 

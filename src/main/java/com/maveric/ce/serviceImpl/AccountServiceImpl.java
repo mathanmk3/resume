@@ -146,6 +146,7 @@ public class AccountServiceImpl implements AccountService {
 					AccountDetails savedAccount = iAccountRepository.save(accountDetails);
 					AccountResponseDto accountResponseDto = commonUtils
 							.accountDetailsToAccountResponseDto(savedAccount);
+					logger.info("responsedto:"+accountResponseDto);
 					return accountResponseDto;
 				} else {
 					throw new ServiceException(ErrorCodes.UN_AUTHORIZED);

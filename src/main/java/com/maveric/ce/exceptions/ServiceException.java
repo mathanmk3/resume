@@ -15,21 +15,7 @@ public class ServiceException extends RuntimeException {
 	
 
 
-	public HttpStatus getHttpStatus() {
-		return httpStatus;
-	}
 
-	public void setHttpStatus(HttpStatus httpStatus) {
-		this.httpStatus = httpStatus;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
 
 	public String getMessage() {
 		return message;
@@ -47,13 +33,6 @@ public class ServiceException extends RuntimeException {
 		this.stackTrace = stackTrace;
 	}
 
-	public String getExceptionCaughtMessage() {
-		return exceptionCaughtMessage;
-	}
-
-	public void setExceptionCaughtMessage(String exceptionCaughtMessage) {
-		this.exceptionCaughtMessage = exceptionCaughtMessage;
-	}
 	
 	public ServiceException(final Exception exception) {
 		this.message = exception.getMessage();
@@ -87,14 +66,6 @@ public class ServiceException extends RuntimeException {
 		this.exceptionCaughtMessage = exceptionCaughtMessage;
 	}
 
-	public ServiceException(String code, String message, StackTraceElement[] stackTrace,
-			String exceptionCaughtMessage) {
-		super();
-		this.code = code;
-		this.message = message;
-		this.stackTrace = stackTrace;
-		this.exceptionCaughtMessage = exceptionCaughtMessage;
-	}
 	
 
 }

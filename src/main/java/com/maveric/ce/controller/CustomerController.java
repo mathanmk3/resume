@@ -40,12 +40,14 @@ public class CustomerController
         return new ResponseEntity<>(customerService.updateCustomer(customerUpdateDto,customerId),HttpStatus.OK);
     }
 
-    @GetMapping("/fetch/{customerId}")
+    // this is not used since there is no functionality in ui to fetch single customer details.
+
+    /*@GetMapping("/fetch/{customerId}")
     public ResponseEntity<CustomerFetchResponseDto> findCustomerById(@PathVariable(name="customerId") Long customerId){
 
         return new ResponseEntity<>(customerService.fetchCustomerById(customerId),HttpStatus.OK);
 
-    }
+    }*/
 
     @GetMapping("/fetchAll")
     public ResponseEntity<List<CustomerResponseDto>> fetchAllCustomers(){

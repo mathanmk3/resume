@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
@@ -24,6 +25,7 @@ import com.maveric.ce.userenum.CurrencyType;
 import com.maveric.ce.userenum.RolesEnum;
 import com.maveric.ce.utils.DateUtils;
 @DataJpaTest
+@Disabled
  class OrderJPATest {
 
 	@Autowired

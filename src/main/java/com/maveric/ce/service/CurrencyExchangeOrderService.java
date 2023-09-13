@@ -19,7 +19,6 @@ public interface CurrencyExchangeOrderService {
 	
 	List <OrderPageDto> getOrderPageDetails(String mailId) throws ServiceException,ServiceException;
 
-	List <OrderPageDto> getOrderPageDetails(Long customerId) throws ServiceException,ServiceException;
 
 
 

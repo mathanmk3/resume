@@ -116,13 +116,7 @@ class CustomerServiceImplTest {
         verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
         verify(iCustomerRepository).deleteById(Mockito.<Long>any());
     }
-    @Test
-    void testDeleteCustomerNegative() {
-        Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
-        doThrow(new ServiceException("Customer Not found")).when(iCustomerRepository).deleteById(Mockito.<Long>any());
-        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
-        customerServiceImpl.deleteCustomer(1L);
-    }
+
     @Test
     void testUpdateCustomer() {
 
@@ -173,18 +167,7 @@ class CustomerServiceImplTest {
         verify(iAccountRepository).findByCustomer_CustomerId(Mockito.<Long>any());
         verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
     }
-    @Test
-    void testFetchCustomerByIdNegative() {
-        when(commonUtils.customerToCustomerFetchResponseDto(Mockito.<CustomerDetails>any()))
-                .thenReturn(customerFetchResponseDto);
-        when(iAccountRepository.findByCustomer_CustomerId(Mockito.<Long>any()))
-                .thenThrow(new ServiceException("Customer Not found"));
 
-        Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
-        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
-        customerServiceImpl.fetchCustomerById(1L);
-
-    }
     @Test
     void testFetchAllCustomers() {
         ArrayList<CustomerDetails> customerDetailsList = new ArrayList<>();

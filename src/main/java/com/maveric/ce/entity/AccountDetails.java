@@ -15,8 +15,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
-public class
-AccountDetails {
+public class AccountDetails {
 
 
     @Id
