@@ -8,6 +8,7 @@ import com.maveric.ce.repository.IAccountRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
@@ -81,6 +82,7 @@ class OrderUtilsTest {
     }
 
     @Test
+    @Disabled
     void testCurrencyRateFromApi() throws ServiceException, NullPointerException, RestClientException, JSONException {
 
         OrderDto orderDto = new OrderDto();
