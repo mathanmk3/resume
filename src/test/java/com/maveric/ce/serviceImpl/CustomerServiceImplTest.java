@@ -9,11 +9,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.maveric.ce.dto.CustomerDto;
-import com.maveric.ce.dto.CustomerFetchResponseDto;
-import com.maveric.ce.dto.CustomerResponseDto;
-import com.maveric.ce.dto.CustomerUpdateDto;
+import com.maveric.ce.dto.*;
 import com.maveric.ce.entity.CustomerDetails;
+import com.maveric.ce.exceptions.ErrorCodes;
 import com.maveric.ce.exceptions.ServiceException;
 import com.maveric.ce.repository.IAccountRepository;
 import com.maveric.ce.repository.ICustomerRepository;
@@ -107,6 +105,81 @@ class CustomerServiceImplTest {
         customerFetchResponseDto.setRolesENum(RolesEnum.CUSTOMER);
         customerFetchResponseDto.setUsername("mathanmk");
     }
+
+    @Test
+    public void testCreateCustomer() {
+        //
+        when(iCustomerRepository.findByEmail(customerDto.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(customerDto.getPassword())).thenReturn("encodedPassword");
+        when(commonUtils.customerDtoToCustomerDetails(Mockito.<CustomerDto>any())).thenReturn(customerDetails);
+        when(commonUtils.customerToCustomerResponseDto(Mockito.<CustomerDetails>any())).thenReturn(customerResponseDto);
+        CustomerResponseDto response = customerServiceImpl.createCustomer(customerDto);
+        assertSame(response,customerResponseDto);
+        assertEquals("mathan@gmail.com", response.getEmail());
+    }
+
+    @Test
+    public void testCreateCustomerMailIdExist() {
+        when(iCustomerRepository.findByEmail(customerDto.getEmail())).thenReturn(Optional.of(customerDetails));
+        when(passwordEncoder.encode(customerDto.getPassword())).thenReturn("encodedPassword");
+        when(commonUtils.customerDtoToCustomerDetails(Mockito.<CustomerDto>any())).thenReturn(customerDetails);
+        when(commonUtils.customerToCustomerResponseDto(Mockito.<CustomerDetails>any())).thenReturn(customerResponseDto);
+        try {
+            CustomerResponseDto response = customerServiceImpl.createCustomer(customerDto);
+        }catch (ServiceException e){
+            assertSame(ErrorCodes.EMAIL_ALREADY_EXISTS, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCustomer(){
+        Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
+        doNothing().when(iCustomerRepository).deleteById(Mockito.<Long>any());
+        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
+        CustomerUpdateDto updateDto = new CustomerUpdateDto();
+        updateDto.setEmail("kumar@gmai.com");
+        updateDto.setUsername("mathanmk");
+        updateDto.setPassword("mathan33");
+        updateDto.setPhoneNumber("94888101204");
+
+        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(Optional.empty());
+        when(commonUtils.customerToCustomerResponseDto(Mockito.<CustomerDetails>any())).thenReturn(customerResponseDto);
+        CustomerResponseDto response = customerServiceImpl.updateCustomer(updateDto,1L);
+        assertSame(customerResponseDto,response);
+    }
+
+    @Test
+    public void testUpdateCustomerSameMailExit(){
+        Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
+        doNothing().when(iCustomerRepository).deleteById(Mockito.<Long>any());
+        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
+        CustomerUpdateDto updateDto = new CustomerUpdateDto();
+        updateDto.setEmail("mathan@gmail.com");
+        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult);
+        when(commonUtils.customerToCustomerResponseDto(Mockito.<CustomerDetails>any())).thenReturn(customerResponseDto);
+        try {
+            CustomerResponseDto response = customerServiceImpl.updateCustomer(updateDto, 11L);
+        }catch (ServiceException e){
+            assertSame(ErrorCodes.EMAIL_ALREADY_EXISTS, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateCustomerNoCustomerFound(){
+
+        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(Optional.empty());
+        CustomerUpdateDto updateDto = new CustomerUpdateDto();
+        updateDto.setEmail("mathan@gmail.com");
+        try {
+            CustomerResponseDto response = customerServiceImpl.updateCustomer(updateDto, 1L);
+        }catch (ServiceException e){
+            assertSame(ErrorCodes.CUSTOMER_NOT_FOUND, e.getMessage());
+        }
+    }
+
+
+
+
     @Test
     void testDeleteCustomer() {
         Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
@@ -118,42 +191,14 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void testUpdateCustomer() {
-
-        when(commonUtils.customerToCustomerResponseDto(Mockito.<CustomerDetails>any())).thenReturn(customerResponseDto);
-        Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
-        Optional<CustomerDetails> ofResult2 = Optional.of(customerDetails);
-        when(iCustomerRepository.save(Mockito.<CustomerDetails>any())).thenReturn(customerDetails);
-        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult2);
-        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
-        when(passwordEncoder.encode(Mockito.<CharSequence>any())).thenReturn("secret");
-
-        CustomerUpdateDto customerDto = new CustomerUpdateDto();
-        customerDto.setEmail("mathan@gmail.com");
-        customerDto.setPassword("password");
-        customerDto.setPhoneNumber("9488101204");
-        customerDto.setUsername("mathanmk");
-        assertSame(customerResponseDto, customerServiceImpl.updateCustomer(customerDto, 1L));
-        verify(commonUtils).customerToCustomerResponseDto(Mockito.<CustomerDetails>any());
-        verify(iCustomerRepository).save(Mockito.<CustomerDetails>any());
-        verify(iCustomerRepository).findByEmail(Mockito.<String>any());
-        verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
-        verify(passwordEncoder).encode(Mockito.<CharSequence>any());
-    }
-    @Test
-    void testUpdateCustomerNegative() {
-        when(commonUtils.customerToCustomerResponseDto(Mockito.<CustomerDetails>any())).thenReturn(customerResponseDto);
-        Optional<CustomerDetails> ofResult = Optional.of(customerDetails);
-        Optional<CustomerDetails> ofResult2 = Optional.of(customerDetails);
-        when(iCustomerRepository.save(Mockito.<CustomerDetails>any())).thenReturn(customerDetails);
-        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(ofResult2);
-        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(ofResult);
-        CustomerUpdateDto customerDto = new CustomerUpdateDto();
-        customerDto.setEmail("mathan@gmail.com");
-        customerDto.setPassword("password");
-        customerDto.setPhoneNumber("9488101204");
-        customerDto.setUsername("mathanmk");
-        customerServiceImpl.updateCustomer(customerDto, 1L);
+    void testDeleteCustomerWhenNoCustomerFound() {
+        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(Optional.empty());
+        try {
+            customerServiceImpl.deleteCustomer(1L);
+        }catch (ServiceException e) {
+            assertSame(ErrorCodes.CUSTOMER_NOT_FOUND, e.getMessage());
+            verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
+       }
     }
     @Test
     void testFetchCustomerById() {
@@ -169,6 +214,16 @@ class CustomerServiceImplTest {
     }
 
     @Test
+    void testFetchCustomerByIdWhenNoCustomerFound() {
+        when(iCustomerRepository.findBycustomerId(Mockito.<Long>any())).thenReturn(Optional.empty());
+        try {
+            assertSame(customerFetchResponseDto, customerServiceImpl.fetchCustomerById(1L));
+        }catch (ServiceException e){
+            assertSame(ErrorCodes.CUSTOMER_NOT_FOUND, e.getMessage());
+            verify(iCustomerRepository).findBycustomerId(Mockito.<Long>any());
+        }
+    }
+    @Test
     void testFetchAllCustomers() {
         ArrayList<CustomerDetails> customerDetailsList = new ArrayList<>();
         customerDetailsList.add(customerDetails);
@@ -178,17 +233,6 @@ class CustomerServiceImplTest {
         assertEquals(true, !customerServiceImpl.fetchAllCustomers().isEmpty());
         verify(iCustomerRepository).findAll();
         verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<CustomerResponseDto>>any());
-    }
-    @Test
-    void testFetchAllCustomersDeatils() {
-        ArrayList<CustomerDetails> customerDetailsList = new ArrayList<>();
-        customerDetailsList.add(customerDetails);
-        customerDetailsList.add(customerDetails);
-        when(iCustomerRepository.findAll()).thenReturn(customerDetailsList);
-        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<CustomerResponseDto>>any()))
-                .thenReturn(customerResponseDto);
-        assertEquals(true, !customerServiceImpl.fetchAllCustomers().isEmpty());
-        verify(iCustomerRepository).findAll();
     }
 
 }

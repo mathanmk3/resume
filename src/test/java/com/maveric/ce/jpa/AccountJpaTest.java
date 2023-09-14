@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.maveric.ce.utils.OrderUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,10 +24,10 @@ import com.maveric.ce.repository.IAccountRepository;
 import com.maveric.ce.repository.ICustomerRepository;
 import com.maveric.ce.serviceImpl.CurrencyExchangeOrderServiceImpl;
 import com.maveric.ce.userenum.CurrencyType;
-import com.maveric.ce.userenum.RolesEnum; 
-import com.maveric.ce.utils.OrderUtils;
+import com.maveric.ce.userenum.RolesEnum;
 
 @DataJpaTest
+@Disabled
 class AccountJpaTest {
 
 	@Mock

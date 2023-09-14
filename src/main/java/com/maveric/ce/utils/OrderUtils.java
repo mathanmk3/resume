@@ -36,18 +36,15 @@ public class OrderUtils {
 			if (currencyApi != null && !currencyApi.isEmpty()) {
 				String apiJson = restTemplate
 						.getForEntity(currencyApi + orderDto.getOrderFromCurrencyType(), String.class).getBody();
-				
 				if (Boolean.FALSE.equals(CommonUtils.checkNullableAndEmpty(apiJson)
 						.orElseThrow(() -> new ServiceException(ErrorCodes.INVALID_CURRENCY_API)))) {
 					JSONObject rateJson = new JSONObject(apiJson);
-					
 					if ((Boolean.TRUE.equals(Optional.of(rateJson.has(rateKey))
 							.orElseThrow(() -> new NullPointerException(ErrorCodes.INVALID_CURRENCY_API))))
-							
 							&& (Boolean.TRUE.equals(
-									Optional.of(rateJson.getJSONObject(rateKey).has(orderDto.getOrderToCurrencyType()))
-											.orElseThrow(() -> new ServiceException(ErrorCodes.API_EMPTY_RESPONSE)))))
-					{
+							Optional.of(rateJson.getJSONObject(rateKey).has(orderDto.getOrderToCurrencyType()))
+									.orElseThrow(() -> new ServiceException(ErrorCodes.API_EMPTY_RESPONSE))))) {
+
 						BigDecimal currencyRate = rateJson.getJSONObject(rateKey)
 								.getBigDecimal(orderDto.getOrderToCurrencyType());
 						orderDto.setCurrencyRate(currencyRate);
@@ -74,7 +71,7 @@ public class OrderUtils {
 					.checkSufficientAmmount(customerId, accountId, sellingAmount)
 					.orElseThrow(() -> new ServiceException(ErrorCodes.INSUFFICIENT_BALANCE, HttpStatus.BAD_REQUEST));
 			return checkSufficientBalance > 0;
-		} catch (SQLExceptions he) {
+		} catch (DataAccessException he) {
 			he.getRootCause();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		}
@@ -107,7 +104,7 @@ public class OrderUtils {
 							HttpStatus.INTERNAL_SERVER_ERROR))) > 0;
 
 			return debitid && creditid;
-		} catch (SQLExceptions he) {
+		} catch (DataAccessException he) {
 			he.getRootCause();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		}
@@ -116,7 +113,7 @@ public class OrderUtils {
 	public void updateOrderExchangeTime(Long id) {
 		try {
 			orderRepo.updateCurrencyExchangeDateTime(DateUtils.currentDateTimeFormat(), id);
-		} catch (SQLExceptions he) {
+		} catch (DataAccessException he) {
 			he.getRootCause();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		}

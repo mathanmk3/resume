@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.maveric.ce.dto.OrderDto;
-import com.maveric.ce.dto.OrderPageDto;
 import com.maveric.ce.dto.WatchListDto;
 import com.maveric.ce.entity.AccountDetails;
 import com.maveric.ce.exceptions.ErrorCodes;
@@ -47,34 +46,6 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	OrderUtils orderUtils;
 
 	/**
-	 * @param customerMailId is passed to retrieve the Customer account details
-	 * @return list of customer accounts
-	 * @throws ServiceException when Account not found
-	 * @throws SQLExceptions when Connection issue.
-	 *
-	 */
-	@Override
-	public List<OrderPageDto> getOrderPageDetails(String customerMailId) throws ServiceException {
-		List<OrderPageDto> listOfAccount = new LinkedList<>();
-		try {
-			List<AccountDetails> listOfCustomerAccounts = customerAccountRepo.getCustomerAccount(customerMailId)
-					.orElseThrow(() -> new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND));
-			if (listOfCustomerAccounts.isEmpty()) {
-				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
-			}
-			for (AccountDetails accounts : listOfCustomerAccounts) {
-				OrderPageDto dto = CommonUtils.getMapper(accounts, OrderPageDto.class);
-				listOfAccount.add(dto);
-			}
-			return listOfAccount;
-		} catch (DataAccessException he) {
-			he.printStackTrace();
-			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
-		}
-
-	}
-
-	/**
 	 * @param orderDto is passed to place the exchange orders
 	 * @return Order Details
 	 * @apiNote Call the currency Date API to get the updated currency date
@@ -110,18 +81,15 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 
 				if (!CommonUtils.checkNullable(ordermap) && (orderUtils.updateCustomerAccountBalance(orderDto))) {
 					orderUtils.updateOrderExchangeTime(order.getId());
-					return ordermap;
 				}
 			}
+			return ordermap;
 		} catch (DataAccessException he) {
-
 			he.printStackTrace();
 			throw new SQLExceptions(ErrorCodes.CONNECTION_ISSUE);
 		} catch (NullPointerException e) {
 			throw new ServiceException(e.getLocalizedMessage());
-
 		}
-		return ordermap;
 	}
 
 	/**
@@ -145,7 +113,6 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 					orderWatchList.add(dto);
 				}
 			} else {
-				System.out.println(ErrorCodes.NO_ORDER_FOUND);
 				throw new ServiceException(ErrorCodes.NO_ORDER_FOUND);
 			}
 			return orderWatchList;

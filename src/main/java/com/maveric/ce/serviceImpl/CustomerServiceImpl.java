@@ -46,7 +46,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseDto createCustomer(CustomerDto customerDto) {
-        System.out.println("Create Customer is called:---------");
         CustomerDetails customerDetails = commonUtils.customerDtoToCustomerDetails(customerDto);
         logger.info("CustomerDetails: ",customerDetails);
         // Encode password using password encoder.
@@ -93,7 +92,6 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<CustomerDetails> customerDetails1 = iCustomerRepository.findBycustomerId(customerId);
 
         logger.info("update customer customer found: ",customerDetails1);
-        System.out.println("update customer object:"+customerDetails1);
         if (!customerDetails1.isEmpty()) {
             logger.info("customer found with id");
             CustomerDetails customerDetails = customerDetails1.get();

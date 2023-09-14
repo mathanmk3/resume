@@ -18,12 +18,6 @@ class SerurityExceptionHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException exc) throws IOException {
-        System.out.println("================================");
-        System.out.println(request.getRequestURL());
-        System.out.println(request.getRequestURI());
-
-        System.out.println("================================");
-
         response.setStatus(403);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ErrorDto errors = new ErrorDto();

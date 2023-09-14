@@ -1,9 +1,11 @@
 package com.maveric.ce.exceptions;
 
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import lombok.Data;
 
+@NoArgsConstructor
 public class ServiceException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
@@ -12,46 +14,24 @@ public class ServiceException extends RuntimeException {
 	private StackTraceElement[] stackTrace;
 	private String exceptionCaughtMessage;
 	private HttpStatus httpStatus;
-	
-
-
-
 
 	public String getMessage() {
+
 		return message;
 	}
-
 	public void setMessage(String message) {
 		this.message = message;
 	}
-
-	public StackTraceElement[] getStackTrace() {
-		return stackTrace;
+	public void setHttpStatus(HttpStatus status) {
+		this.httpStatus = status;
 	}
-
-	public void setStackTrace(StackTraceElement[] stackTrace) {
-		this.stackTrace = stackTrace;
+	public HttpStatus getHttpStatus() {
+		return httpStatus;
 	}
-
-	
-	public ServiceException(final Exception exception) {
-		this.message = exception.getMessage();
-		this.stackTrace = exception.getStackTrace();
-	}
-
-
 	public ServiceException(String message) {
 		super();
 		this.message = message;
 	}
-
-	public ServiceException(String code, String message) {
-		super();
-		this.code = code;
-		this.message = message;
-	}
-	
-	
 
 	public ServiceException(String message, HttpStatus httpStatus) {
 		super();
@@ -59,13 +39,5 @@ public class ServiceException extends RuntimeException {
 		this.httpStatus = httpStatus;
 	}
 
-	public ServiceException(String code, String message, String exceptionCaughtMessage) {
-		super();
-		this.code = code;
-		this.message = message;
-		this.exceptionCaughtMessage = exceptionCaughtMessage;
-	}
-
-	
 
 }

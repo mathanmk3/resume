@@ -40,7 +40,6 @@ public class CommonUtils {
 					.map(customer -> modelMapper.map(customer, AccountResponseDto.class)).collect(Collectors.toList());
 			customerFetchResponseDto.setAccountResponseDtoList(accountResponseDtoList);
 		}
-
 		return customerFetchResponseDto;
 
 	}
@@ -48,7 +47,6 @@ public class CommonUtils {
 	public CustomerDetails customerDtoToCustomerDetails(CustomerDto customerDto) {
 
 		CustomerDetails customerDetails = new CustomerDetails();
-
 		BeanUtils.copyProperties(customerDto, customerDetails);
 		return customerDetails;
 

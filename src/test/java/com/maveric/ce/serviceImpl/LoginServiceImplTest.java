@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.maveric.ce.dto.LoginDto;
 import com.maveric.ce.dto.UserDetailsImpl;
 import com.maveric.ce.entity.CustomerDetails;
+import com.maveric.ce.exceptions.ErrorCodes;
 import com.maveric.ce.exceptions.ServiceException;
 import com.maveric.ce.repository.ICustomerRepository;
 import com.maveric.ce.response.LoginResponse;
@@ -101,6 +102,41 @@ class LoginServiceImplTest {
     }
 
     @Test
+    void testFindUserByMailIdInvalidUserName() throws ServiceException {
+        Optional<CustomerDetails> mockResult = Optional.of(customerDetails);
+        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(Optional.empty());
+        LoginDto loginDto = new LoginDto();
+        loginDto.setEmail("mathan@gmail.com");
+        loginDto.setPassword("mathan");
+        try {
+            loginServiceImpl.findUserByMailId(loginDto, new MockHttpServletRequest());
+        }catch (ServiceException e ){
+            assertSame(ErrorCodes.INVALID_AUTHENTICATION, e.getMessage());
+            verify(iCustomerRepository).findByEmail(Mockito.<String>any());
+        }
+    }
+
+    @Test
+    void testFindUserByMailIdInvalidPassword() throws ServiceException {
+        Optional<CustomerDetails> mockResult = Optional.of(customerDetails);
+        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(mockResult);
+        doNothing().when(loginResponse).setCustomerId(Mockito.<Long>any());
+        doNothing().when(loginResponse).setRole(Mockito.<String>any());
+        when(jWTUtils.generateToken(Mockito.<UserDetailsImpl>any(), Mockito.<HttpServletRequest>any(),
+                Mockito.<LoginResponse>any())).thenReturn(loginResponse);
+        when(passwordEncoder.matches(Mockito.<CharSequence>any(), Mockito.<String>any())).thenReturn(false);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setEmail("mathan@gmail.com");
+        loginDto.setPassword("mathan");
+        try {
+            loginServiceImpl.findUserByMailId(loginDto, new MockHttpServletRequest());
+        }catch (ServiceException e ){
+            assertSame(ErrorCodes.INVALID_AUTHENTICATION, e.getMessage());
+            verify(iCustomerRepository).findByEmail(Mockito.<String>any());
+        }
+    }
+
+    @Test
     void testLoadUserByUsername() throws UsernameNotFoundException {
         Optional<CustomerDetails> customerDetailsMock = Optional.of(customerDetails);
         when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(customerDetailsMock);
@@ -110,6 +146,19 @@ class LoginServiceImplTest {
         assertEquals("mathan@gmail.com", uernameResult.getEmailId());
         Collection<? extends GrantedAuthority> authorities = uernameResult.getAuthorities();
         verify(iCustomerRepository).findByEmail(Mockito.<String>any());
+    }
+    @Test
+    void testLoadUserByUsernameInvalidUser() throws UsernameNotFoundException {
+        Optional<CustomerDetails> customerDetailsMock = Optional.of(customerDetails);
+        when(iCustomerRepository.findByEmail(Mockito.<String>any())).thenReturn(Optional.empty());
+        try {
+            UserDetailsImpl uernameResult = loginServiceImpl.loadUserByUsername("42");
+        }catch (ServiceException e){
+            assertSame(ErrorCodes.CUSTOMER_NOT_FOUND, e.getMessage());
+            verify(iCustomerRepository).findByEmail(Mockito.<String>any());
+
+        }
+
     }
 
 }

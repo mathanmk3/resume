@@ -18,6 +18,7 @@ public class CurrencyExchangeApplication {
 
 	private static final Logger Log= LoggerFactory.getLogger(CurrencyExchangeApplication.class);
 	public static void main(String[] args) {
+
 		SpringApplication.run(CurrencyExchangeApplication.class, args);
 	}
 

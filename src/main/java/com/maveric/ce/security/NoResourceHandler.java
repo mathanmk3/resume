@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -21,11 +20,6 @@ public class NoResourceHandler extends Http403ForbiddenEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg)
             throws IOException {
         try {
-        arg.getMessage();
-            System.out.println("----------------"+arg.getCause());
-
-            arg.getStackTrace();
-            System.out.println("----------------"+arg.getLocalizedMessage());
         response.setStatus(404);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ErrorDto errors = new ErrorDto();
@@ -39,7 +33,5 @@ public class NoResourceHandler extends Http403ForbiddenEntryPoint {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }

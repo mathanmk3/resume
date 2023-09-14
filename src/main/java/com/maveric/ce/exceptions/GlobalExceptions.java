@@ -1,22 +1,15 @@
 package com.maveric.ce.exceptions;
 
 import com.maveric.ce.dto.ErrorDto;
-
-import com.maveric.ce.serviceImpl.CustomerServiceImpl;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.ObjectError;
 
@@ -40,8 +33,6 @@ public class GlobalExceptions   {
 		List <ObjectError>listOfErrors=ex.getBindingResult().getAllErrors();
 		String errorslist="";
 		for(ObjectError list: listOfErrors){
-			System.out.println(list.getObjectName());
-			System.out.println(list.getDefaultMessage());
 			errorslist=errorslist+","+list.getDefaultMessage();
 
 		}

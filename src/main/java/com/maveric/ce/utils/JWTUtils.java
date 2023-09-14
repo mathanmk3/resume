@@ -46,7 +46,6 @@ public class JWTUtils {
 			throw new ServiceException(ErrorCodes.Server_Expection);
 		}
 		return loginResponse;
-
 	}
 
 	public String generateRefershToken(UserDetails userDetails, HttpServletRequest request) {
@@ -63,19 +62,7 @@ public class JWTUtils {
 			Claims claims = Jwts.parserBuilder().setSigningKey(apiAccessKey).build().parseClaimsJws(token).getBody();
 			return claims.getSubject();
 		} catch (Exception e) {
-			System.out.println("inside cht");
 			throw new ServiceException(ErrorCodes.INVALID_TOKEN);
-		}
-	}
-
-	public static String extractRole(String token) {
-		try {
-			System.out.println("serectKey-- "+apiAccessKey);
-			Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(apiAccessKey).build().parseClaimsJws(token);
-			return claims.getBody().get("roles").toString();
-		} catch (Exception e) {
-			throw new ServiceException(ErrorCodes.INVALID_TOKEN);
-
 		}
 	}
 
@@ -90,7 +77,6 @@ public class JWTUtils {
 			return checkUserName && notExpireDate;
 		} catch (Exception e) {
 			throw new ServiceException(ErrorCodes.INVALID_TOKEN);
-
 		}
 	}
 
