@@ -62,10 +62,7 @@ import com.maveric.ce.utils.DateUtils;
 		AccountDetails saveDeatils = customerAccountRepo.save(accDetails);
 		AccountDetails saveDeatils2 = customerAccountRepo.save(accDetail2);
 
-		orderdetails = CurrencyExchangeOrders.builder().buyingValue(Double.valueOf(100.0))
-				.currencyRate(BigDecimal.valueOf(7.8)).orderAmount(Double.valueOf(100))
-				.sellingValue(Double.valueOf(100)).orderFromCurrencyType("INR").orderToCurrencyType("AED")
-				.orderFromAccountId(saveDeatils).orderToAccountId(saveDeatils2).customer(customerDeatilsSaved).build();
+		orderdetails = null;
 	
 		ordeRepo.save(orderdetails);
 	}
@@ -73,7 +70,7 @@ import com.maveric.ce.utils.DateUtils;
 	@Test
 	void testGetCurrencyPair() {
 		String mailId = "mathan33@gmail.com";
-		Optional<List<CurrencyExchangeOrders>> expectedValue = ordeRepo.getLatestCurrencyPair(mailId);
+		Optional<List<CurrencyExchangeOrders>> expectedValue = ordeRepo.getWatchList(mailId);
 		boolean expected = expectedValue.get().size() > 0;
 		assertThat(expected).isTrue();
 	}

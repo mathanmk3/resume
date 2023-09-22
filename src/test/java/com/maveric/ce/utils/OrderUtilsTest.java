@@ -101,8 +101,8 @@ class OrderUtilsTest {
         JSONObject rateJsonObject = mock(JSONObject.class);
         when(rateJson.getJSONObject("rates")).thenReturn(rateJsonObject);
         when(rateJsonObject.has(orderDto.getOrderToCurrencyType())).thenReturn(true);
-        when(rateJson.getJSONObject(rateKey)
-                        .getBigDecimal(orderDto.getOrderToCurrencyType())).thenReturn(BigDecimal.valueOf(11L));
+        //when(rateJson.getJSONObject(rateKey)
+         //               .getBigDecimal(orderDto.getOrderToCurrencyType())).thenReturn(BigDecimal.valueOf(11L));
         OrderDto resp =orderUtils.currencyRateFromApi(orderDto);
         assertSame(orderDto.getCurrencyRate(), resp.getCurrencyRate());
         verify(restTemplate).getForEntity(Mockito.<String>any(), Mockito.<Class<String>>any(), isA(Object[].class));

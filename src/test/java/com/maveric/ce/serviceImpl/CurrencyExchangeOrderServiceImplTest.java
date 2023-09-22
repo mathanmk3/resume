@@ -165,12 +165,12 @@ class CurrencyExchangeOrderServiceImplTest {
 		CurrencyExchangeOrders listPair = mock(CurrencyExchangeOrders.class);
 		LinkedList<CurrencyExchangeOrders> orderList = new LinkedList<>();
 		orderList.add(listPair);
-		when(ordeRepo.getLatestCurrencyPair(Mockito.anyString())).thenReturn(Optional.of(orderList));
+		when(ordeRepo.getWatchList(Mockito.anyString())).thenReturn(Optional.of(orderList));
 		utilities.when(() -> CommonUtils.getMapper(listPair, WatchListDto.class)).thenReturn(watchListDto);
 		List<WatchListDto> expected = service.getOrderWatchList(Mockito.anyString());
 		assertNotNull(expected.get(0));
 		assertEquals(watchListDto, expected.get(0));
-		verify(ordeRepo).getLatestCurrencyPair(Mockito.anyString());
+		verify(ordeRepo).getWatchList(Mockito.anyString());
 	}
 
 
@@ -178,12 +178,12 @@ class CurrencyExchangeOrderServiceImplTest {
 	void testLatestCurrencyPairWhenNoConnection() throws SQLExceptions, ServiceException {
 		String mailId ="mathan33@gamil.com";
 		try {
-			when(ordeRepo.getLatestCurrencyPair(Mockito.anyString())).thenThrow(new DataAccessException("Database error") {
+			when(ordeRepo.getWatchList(Mockito.anyString())).thenThrow(new DataAccessException("Database error") {
 			});
 			service.getOrderWatchList(mailId);
 		} catch (DataAccessException e) {
 			assertEquals(ErrorCodes.CONNECTION_ISSUE, e.getMessage());
-			verify(ordeRepo).getLatestCurrencyPair(Mockito.<String>any());
+			verify(ordeRepo).getWatchList(Mockito.<String>any());
 		}
 	}
 
@@ -191,7 +191,7 @@ class CurrencyExchangeOrderServiceImplTest {
 	public void testGetOrderWatchListNoOrderFound() throws ServiceException {
 		String customerMailId = "mathan@gamil.com";
 		LinkedList<CurrencyExchangeOrders> orderList = new LinkedList<>();
-		when(ordeRepo.getLatestCurrencyPair(customerMailId)).thenReturn(Optional.of(orderList));
+		when(ordeRepo.getWatchList(customerMailId)).thenReturn(Optional.of(orderList));
 		try {
 			List<WatchListDto> orderWatchList = service.getOrderWatchList(customerMailId);
 		} catch (ServiceException e) {
