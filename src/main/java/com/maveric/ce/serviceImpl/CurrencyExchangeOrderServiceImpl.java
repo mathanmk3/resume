@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.maveric.ce.dto.OrderDto;
 import com.maveric.ce.dto.WatchListDto;
-import com.maveric.ce.entity.AccountDetails;
 import com.maveric.ce.exceptions.ErrorCodes;
 import com.maveric.ce.exceptions.SQLExceptions;
 import com.maveric.ce.exceptions.ServiceException;
@@ -22,12 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.maveric.ce.entity.CurrencyExchangeOrders;
 import com.maveric.ce.repository.CurrencyExchangeOrdersRepo;
 import com.maveric.ce.service.CurrencyExchangeOrderService;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderService {
@@ -37,13 +35,18 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	String currencyApi;
 
 	@Autowired
+	RestTemplate restTemplate;
+
+	@Autowired
 	CurrencyExchangeOrdersRepo orderRepo;
 	@Autowired
 	IAccountRepository customerAccountRepo;
+
 	@Autowired
 	ModelMapper modelMapper;
 	@Autowired
 	OrderUtils orderUtils;
+
 
 	/**
 	 * @param orderDto is passed to place the exchange orders
@@ -102,10 +105,10 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 	@Override
 	public List<WatchListDto> getOrderWatchList(String customerMailId) throws ServiceException {
 		try {
-			
+
 
 			List<WatchListDto> orderWatchList = new LinkedList<>();
-			List<CurrencyExchangeOrders> listOfOrder = orderRepo.getLatestCurrencyPair(customerMailId)
+			List<CurrencyExchangeOrders> listOfOrder = orderRepo.getWatchList(customerMailId)
 					.orElseThrow(() -> new ServiceException("NO_ORDER_FOUND"));
 			if (!listOfOrder.isEmpty()) {
 				for (CurrencyExchangeOrders orders : listOfOrder) {
@@ -122,5 +125,8 @@ public class CurrencyExchangeOrderServiceImpl implements CurrencyExchangeOrderSe
 		}
 
 	}
+
+
+
 
 }

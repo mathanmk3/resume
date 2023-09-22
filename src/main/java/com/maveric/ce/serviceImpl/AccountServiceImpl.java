@@ -99,8 +99,7 @@ public class AccountServiceImpl implements AccountService {
 			} else {
 				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
 			}
-		}
-		else{
+		} else{
 			throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
 		}
 	}
@@ -164,30 +163,34 @@ public class AccountServiceImpl implements AccountService {
 	/* To delete account of a customer */
 	public Boolean deleteAccount(Long accountNumber, Long customerId) throws ServiceException {
 		logger.info("in delete");
-		Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
-		logger.info("customer details in deleteAccount:" + customerDetails);
-		if (!customerDetails.isEmpty()) {
-			logger.info("AccountNumber to delete:"+accountNumber);
-			AccountDetails accountDetails = iAccountRepository.findByAccountNumber(accountNumber);
-			logger.info("account details to delete:"+ iAccountRepository.findByAccountNumber(accountNumber));
-			if (accountDetails != null) {
-				if (accountDetails.getCustomer().getCustomerId() == customerId) {
-					logger.info("deleting successfully");
-					iAccountRepository.deleteByAccountNumber(accountNumber);
-					logger.info("deleted  successfully");
-					return Boolean.TRUE;
+		try {
+			Optional<CustomerDetails> customerDetails = iCustomerRepository.findBycustomerId(customerId);
+			logger.info("customer details in deleteAccount:" + customerDetails);
+			if (!customerDetails.isEmpty()) {
+				logger.info("AccountNumber to delete:" + accountNumber);
+				AccountDetails accountDetails = iAccountRepository.findByAccountNumber(accountNumber);
+				logger.info("account details to delete:" + iAccountRepository.findByAccountNumber(accountNumber));
+				if (accountDetails != null) {
+					if (accountDetails.getCustomer().getCustomerId().compareTo(customerId)==0) {
+						logger.info("deleting successfully");
+						iAccountRepository.deleteByAccountNumber(accountNumber);
+						logger.info("deleted  successfully");
+						return Boolean.TRUE;
+					} else {
+						throw new ServiceException(ErrorCodes.UN_AUTHORIZED);
+					}
 				} else {
-					throw new ServiceException(ErrorCodes.UN_AUTHORIZED);
+					throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
 				}
 
 			} else {
-				throw new ServiceException(ErrorCodes.ACCOUNT_NOT_FOUND);
+				throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
 			}
+		} catch (Exception e) {
+			e.getStackTrace();
+			return Boolean.FALSE;
 
-		} else {
-			throw new ServiceException(ErrorCodes.CUSTOMER_NOT_FOUND);
 		}
-
 	}
 
 	/*

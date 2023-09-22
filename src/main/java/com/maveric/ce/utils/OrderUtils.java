@@ -6,8 +6,13 @@ import java.util.Optional;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,6 +24,8 @@ import com.maveric.ce.repository.CurrencyExchangeOrdersRepo;
 import com.maveric.ce.repository.IAccountRepository;
 
 @Component
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+
 public class OrderUtils {
 	@Value("${currencyApi}")
 	String currencyApi;
@@ -31,11 +38,14 @@ public class OrderUtils {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Autowired
+	OrderUtils orderUtils;
+
 	public OrderDto currencyRateFromApi(OrderDto orderDto) throws ServiceException,NullPointerException {
 		try {
 			if (currencyApi != null && !currencyApi.isEmpty()) {
-				String apiJson = restTemplate
-						.getForEntity(currencyApi + orderDto.getOrderFromCurrencyType(), String.class).getBody();
+				String apiJson =orderUtils.getCurrencyRates(orderDto.getOrderFromCurrencyType());
+				System.out.println(apiJson);
 				if (Boolean.FALSE.equals(CommonUtils.checkNullableAndEmpty(apiJson)
 						.orElseThrow(() -> new ServiceException(ErrorCodes.INVALID_CURRENCY_API)))) {
 					JSONObject rateJson = new JSONObject(apiJson);
@@ -119,4 +129,45 @@ public class OrderUtils {
 		}
 	}
 
+	public JSONObject getCurrencyRateJson (String baseCurrecny){
+		JSONObject currencyRate = new JSONObject();
+		if (currencyApi != null && !currencyApi.isEmpty()) {
+			String apiJson = restTemplate
+					.getForEntity(currencyApi + baseCurrecny, String.class).getBody();
+			if (Boolean.FALSE.equals(CommonUtils.checkNullableAndEmpty(apiJson)
+					.orElseThrow(() -> new ServiceException(ErrorCodes.INVALID_CURRENCY_API)))) {
+				JSONObject rateJson = new JSONObject(apiJson);
+				if ((Boolean.TRUE.equals(Optional.of(rateJson.has(rateKey))
+						.orElseThrow(() -> new NullPointerException(ErrorCodes.INVALID_CURRENCY_API))))){
+					currencyRate = rateJson.getJSONObject(rateKey);
+					String lastDateTime = rateJson.getString("time_last_update_utc") != null
+							? DateUtils.dateFormat(rateJson.getString("time_last_update_utc"))
+							: DateUtils.currentDateTimeFormat();
+					currencyRate.put("time_last_update_utc",lastDateTime);
+				}
+			}
+		}
+		return  currencyRate;
+	}
+	/**
+	 * @apiNote This method hit the currency API and store the values in caches to avoid hitting multiple times
+	 * @param baseCurrency
+	 * @return String of currency json
+	 */
+	@Cacheable(value = "currencyRates", key = "#baseCurrency")
+	public String getCurrencyRates(String baseCurrency) {
+		String apiJson = restTemplate.getForEntity(currencyApi + baseCurrency, String.class).getBody();
+		return apiJson;
+	}
+	/**
+	 * @apiNote Method will run for every 30 mins and Evict the cahces
+	 */
+	@Scheduled(cron = "0 */30 * * * *")
+	@CacheEvict(value = "currencyRates", allEntries = true)
+	public void refreshCurrencyRates() {
+		System.out.println("Refreshing currency rates cache.");
+	}
 }
+
+
+

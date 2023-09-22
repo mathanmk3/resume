@@ -51,13 +51,6 @@ public class AccountDetails {
     @Column(name = "accountdebiteddatetime")
     private String accountDebitedDateTime;
 
-    @OneToMany(mappedBy = "orderFromAccountId",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
-    private List<CurrencyExchangeOrders> listOfaccountFrom;
-
-
-    @OneToMany(mappedBy = "orderToAccountId",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
-    private List<CurrencyExchangeOrders> listOfaccountTo;
-
     @Override
     public String toString() {
         return "AccountDetails{" +

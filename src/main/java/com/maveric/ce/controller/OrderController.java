@@ -1,6 +1,5 @@
 package com.maveric.ce.controller;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import com.maveric.ce.dto.OrderDto;
@@ -14,11 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.maveric.ce.response.OrderResponse;
 import com.maveric.ce.serviceImpl.CurrencyExchangeOrderServiceImpl;
@@ -34,10 +29,10 @@ public class OrderController {
 	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 	@Autowired
 	CurrencyExchangeOrderServiceImpl currencyExchangeOrderService;
-	/*@Autowired
+    /*@Autowired
 	OrderResponse response;*/
 
-	/*@GetMapping
+    /*@GetMapping
 	public ResponseEntity<List<OrderPageDto>> getOrderPageDetails(HttpServletRequest request)
 			throws ServiceException, SQLException {
 		String token = request.getHeader("Authorization");
@@ -58,9 +53,7 @@ public class OrderController {
 			logger.info("Called inside if place order");
 			response.setMessage("Currency Exchanges");
 			response.setOrderData(orderDetails);
-
 			logger.info("response:"+response.getMessage());
-			logger.info(""+response.getOrderData());
 		}
 		logger.info("before returning placeorder");
 		logger.info("response:"+response.getMessage());
