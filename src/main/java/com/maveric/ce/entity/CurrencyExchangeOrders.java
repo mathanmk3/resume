@@ -32,16 +32,18 @@ public class CurrencyExchangeOrders {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="customerid")
     private CustomerDetails customer;
-	
-    @Column(name="ordertoaccountid")
-    private Long orderToAccountId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="ordertoaccountid")
+	private AccountDetails orderToAccountId;
 	
 	
 	@Column(name = "ordertocurrencytype")
 	private String orderToCurrencyType;
-	
-    @Column(name="orderfromaccountid")
-    private Long orderFromAccountId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="orderfromaccountid")
+	private AccountDetails orderFromAccountId;
 	
 	@Column(name = "orderfromcurrencytype")
 	private String orderFromCurrencyType;
@@ -63,8 +65,8 @@ public class CurrencyExchangeOrders {
 	private String orderExchangeDateTime;
 
 	public CurrencyExchangeOrders(Long id,CustomerDetails customer, String orderToCurrencyType,
-			String orderFromCurrencyType, BigDecimal currencyRate, double orderAmount,Long orderFromAccountId
-			,Long orderToAccountId,String orderExchangeDateTime) {
+			String orderFromCurrencyType, BigDecimal currencyRate, double orderAmount,AccountDetails orderFromAccountId
+			,AccountDetails orderToAccountId,String orderExchangeDateTime) {
 		super();
 		this.id=id;
 		this.customer = customer;

@@ -3,7 +3,6 @@ package com.maveric.ce.exceptions;
 import org.springframework.dao.DataAccessException;
 
 public class SQLExceptions extends DataAccessException {
-
 	/**
 	 * 
 	 */

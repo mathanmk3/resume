@@ -7,6 +7,7 @@ import com.maveric.ce.entity.AccountDetails;
 import com.maveric.ce.entity.AccountNumGenerator;
 import com.maveric.ce.entity.CustomerDetails;
 import com.maveric.ce.exceptions.*;
+import com.maveric.ce.repository.CurrencyExchangeOrdersRepo;
 import com.maveric.ce.repository.IAccNumGenRepository;
 import com.maveric.ce.repository.IAccountRepository;
 import com.maveric.ce.repository.ICustomerRepository;
@@ -33,6 +34,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	IAccNumGenRepository iAccNumGenRepository;
+
+	@Autowired
+	CurrencyExchangeOrdersRepo ordersRepo;
 
 	@Autowired
 	CommonUtils commonUtils;
@@ -171,7 +175,7 @@ public class AccountServiceImpl implements AccountService {
 				AccountDetails accountDetails = iAccountRepository.findByAccountNumber(accountNumber);
 				logger.info("account details to delete:" + iAccountRepository.findByAccountNumber(accountNumber));
 				if (accountDetails != null) {
-					if (accountDetails.getCustomer().getCustomerId().compareTo(customerId)==0) {
+					if (accountDetails.getCustomer().getCustomerId().compareTo(customerId)==0 ) {
 						logger.info("deleting successfully");
 						iAccountRepository.deleteByAccountNumber(accountNumber);
 						logger.info("deleted  successfully");
@@ -192,6 +196,14 @@ public class AccountServiceImpl implements AccountService {
 
 		}
 	}
+
+	/*private boolean backUporderHistoryBeforeDeleting(Long customerId, Long accountId) {
+		Long  result =ordersRepo.updateOrderStatus(customerId,accountId,accountId);
+		if (result>0){
+			result true
+		}
+		return  false;
+	}*/
 
 	/*
 	 * below method gives list of all accounts available in database. Need to check

@@ -23,7 +23,6 @@ public class GlobalExceptions   {
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptions.class);
 	@Autowired
 	ErrorCodes ec;
-
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorDto> handleBadRequestExceptions(MethodArgumentNotValidException ex) {
 		ErrorDto errors = new ErrorDto();
@@ -34,7 +33,6 @@ public class GlobalExceptions   {
 		String errorslist="";
 		for(ObjectError list: listOfErrors){
 			errorslist=errorslist+","+list.getDefaultMessage();
-
 		}
 		logger.info(" list:"+listOfErrors);
 		ex.getBindingResult().getAllErrors().forEach((err) -> {
